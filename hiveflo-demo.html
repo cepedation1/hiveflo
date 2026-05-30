@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HiveFlow — See It In Action</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #08070e;
+    font-family: 'DM Sans', sans-serif;
+    color: #e8e4dc;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-x: hidden;
+  }
+
+  .eyebrow {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: #c9933a;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  h1 em { font-style: italic; color: #f0c060; }
+
+  .sub {
+    font-size: 15px;
+    color: #888;
+    text-align: center;
+    margin-bottom: 60px;
+    max-width: 480px;
+  }
+
+  .phone-wrap {
+    position: relative;
+    width: 300px;
+    margin: 0 auto 40px;
+  }
+
+  .phone {
+    width: 300px;
+    height: 600px;
+    background: #0f0f18;
+    border-radius: 40px;
+    border: 2px solid #1e1e30;
+    box-shadow: 0 0 80px rgba(201,147,58,0.15), 0 40px 80px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .phone::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 20px;
+    background: #08070e;
+    border-radius: 20px;
+    z-index: 10;
+  }
+
+  .screen {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .step-screen {
+    position: absolute;
+    inset: 0;
+    padding: 50px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .step-screen.active { opacity: 1; }
+
+  /* STEP 1 */
+  .s1-header {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #c9933a;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .card-photo {
+    width: 100%;
+    height: 160px;
+    background: linear-gradient(135deg, #1a1a28, #12122a);
+    border-radius: 12px;
+    border: 2px dashed #2a2a45;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .card-photo.has-card {
+    border-color: #c9933a;
+    background: linear-gradient(135deg, #1a1400, #0f0c00);
+  }
+
+  .card-photo-inner {
+    width: 85%;
+    height: 80%;
+    background: linear-gradient(135deg, #1a1a2e, #0d0d20);
+    border: 1px solid #2d2d50;
+    border-radius: 8px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 12px 14px;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.4s ease;
+  }
+
+  .card-photo-inner.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .card-co { font-size: 9px; color: #7c3aed; font-family: 'Syne', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .card-name { font-size: 12px; font-weight: 700; color: #e8e4dc; font-family: 'Syne', sans-serif; }
+  .card-title { font-size: 8px; color: #a78bfa; margin-top: 1px; }
+  .card-info { font-size: 7px; color: #666; margin-top: 6px; line-height: 1.8; }
+
+  .upload-icon { font-size: 28px; }
+  .upload-text { font-size: 11px; color: #444; }
+
+  .extract-btn {
+    width: 100%;
+    background: linear-gradient(135deg, #f0c060, #c9933a);
+    color: #08070e;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  /* STEP 2 */
+  .extracting-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .hex-spin {
+    width: 70px;
+    height: 70px;
+    animation: hexRotate 2s linear infinite;
+    filter: drop-shadow(0 0 20px rgba(201,147,58,0.6));
+  }
+
+  @keyframes hexRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  .extracting-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #f0c060;
+    letter-spacing: 0.1em;
+  }
+
+  .extracting-sub { font-size: 11px; color: #555; text-align: center; }
+
+  .scan-line {
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #f0c060, transparent);
+    animation: scanDown 1.5s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(240,192,96,0.8);
+  }
+
+  @keyframes scanDown {
+    0% { top: 80px; opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { top: 480px; opacity: 0; }
+  }
+
+  /* STEP 3 */
+  .form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .form-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #f0c060;
+  }
+
+  .form-badge {
+    font-size: 9px;
+    background: rgba(201,147,58,0.2);
+    color: #c9933a;
+    padding: 3px 8px;
+    border-radius: 10px;
+    border: 1px solid rgba(201,147,58,0.3);
+  }
+
+  .form-field { margin-bottom: 8px; }
+
+  .form-label {
+    font-size: 8px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 2px;
+  }
+
+  .form-value {
+    background: #13131a;
+    border: 1px solid #1e1e30;
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 11px;
+    color: #e8e4dc;
+    width: 100%;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s ease;
+  }
+
+  .form-value.filled {
+    opacity: 1;
+    transform: translateX(0);
+    border-color: rgba(201,147,58,0.3);
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+
+  .action-row {
+    display: flex;
+    gap: 5px;
+    margin-top: auto;
+    padding-top: 10px;
+  }
+
+  .action-btn-sm {
+    flex: 1;
+    padding: 9px 2px;
+    border-radius: 8px;
+    font-size: 9px;
+    font-weight: 700;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+  }
+
+  .btn-gold { background: linear-gradient(135deg, #f0c060, #c9933a); color: #08070e; }
+  .btn-green { background: linear-gradient(135deg, #059669, #047857); color: #fff; }
+  .btn-purple { background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; }
+  .btn-blue { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; }
+
+  /* STEP 4 */
+  .result-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .result-tab {
+    flex: 1;
+    padding: 7px 4px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    border: 1px solid #1e1e30;
+    color: #444;
+    transition: all 0.3s;
+  }
+
+  .result-tab.active-tab {
+    background: rgba(201,147,58,0.15);
+    border-color: rgba(201,147,58,0.4);
+    color: #f0c060;
+  }
+
+  .email-preview {
+    background: #13131a;
+    border: 1px solid #1e1e30;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 10px;
+    line-height: 1.7;
+    color: #c8c0b8;
+    flex: 1;
+    overflow: hidden;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+  }
+
+  .email-subject {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    color: #f0c060;
+    font-weight: 700;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #1e1e30;
+  }
+
+  /* SUCCESS */
+  .success-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(5,150,105,0.96);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    z-index: 20;
+  }
+
+  .success-overlay.show { opacity: 1; }
+  .success-icon { font-size: 44px; }
+  .success-text { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; color: #fff; }
+  .success-items { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .success-item { font-size: 11px; color: rgba(255,255,255,0.85); display: flex; align-items: center; gap: 6px; }
+
+  /* INDICATORS */
+  .steps-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #1e1e30;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .dot.active { background: #c9933a; width: 24px; border-radius: 4px; }
+
+  .step-labels {
+    display: flex;
+    justify-content: center;
+    max-width: 340px;
+    margin-top: 16px;
+  }
+
+  .step-label {
+    flex: 1;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #333;
+    transition: color 0.3s;
+    padding: 0 4px;
+  }
+
+  .step-label.active { color: #c9933a; }
+
+  .replay-btn {
+    margin-top: 28px;
+    background: transparent;
+    border: 1px solid rgba(201,147,58,0.3);
+    color: #c9933a;
+    padding: 10px 28px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .replay-btn:hover { background: rgba(201,147,58,0.1); border-color: #c9933a; }
+
+  .glow {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(201,147,58,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="glow"></div>
+
+<p class="eyebrow">See It In Action</p>
+<h1>From Card to <em>Connected</em><br>in 30 Seconds</h1>
+<p class="sub">Watch HiveFlow turn a business card into a full contact, pitch email, and text message — instantly.</p>
+
+<div class="phone-wrap">
+  <div class="phone">
+    <div class="screen">
+
+      <!-- STEP 1: Upload -->
+      <div class="step-screen active" id="step1">
+        <div class="s1-header">💼 BIZ CARD INTAKE</div>
+        <div class="card-photo" id="cardPhoto">
+          <div class="upload-icon">📷</div>
+          <div class="upload-text">Tap to scan card</div>
+          <div class="card-photo-inner" id="cardInner">
+            <div class="card-co">Keller Williams Realty</div>
+            <div class="card-name">JESSICA MARTINEZ</div>
+            <div class="card-title">Realtor® · Luxury Specialist</div>
+            <div class="card-info">
+              📞 305.492.7831<br>
+              ✉️ jessica@kwmiami.com<br>
+              🌐 jessicamartinez.com<br>
+              📍 Coral Gables, FL
+            </div>
+          </div>
+        </div>
+        <button class="extract-btn">✦ EXTRACT CARD</button>
+      </div>
+
+      <!-- STEP 2: Extracting -->
+      <div class="step-screen" id="step2">
+        <div class="extracting-center">
+          <svg class="hex-spin" viewBox="0 0 70 70" fill="none">
+            <polygon points="35,5 60,19 60,47 35,61 10,47 10,19" fill="none" stroke="url(#hg)" stroke-width="1.5"/>
+            <polygon points="35,12 54,23 54,43 35,54 16,43 16,23" fill="rgba(201,147,58,0.1)" stroke="url(#hg)" stroke-width="1"/>
+            <rect x="32.5" y="25" width="5" height="16" rx="1.5" fill="url(#hg)"/>
+            <rect x="27" y="30" width="16" height="5" rx="1.5" fill="url(#hg)"/>
+            <defs>
+              <linearGradient id="hg" x1="10" y1="5" x2="60" y2="61" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#f0c060"/>
+                <stop offset="100%" stop-color="#c9933a"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="extracting-text">EXTRACTING...</div>
+          <div class="extracting-sub">AI is reading the card<br>and building your contact</div>
+        </div>
+        <div class="scan-line"></div>
+      </div>
+
+      <!-- STEP 3: Form -->
+      <div class="step-screen" id="step3">
+        <div class="form-header">
+          <div class="form-title">Contact Details</div>
+          <div class="form-badge">✦ AI Filled</div>
+        </div>
+        <div class="form-grid">
+          <div class="form-field"><div class="form-label">First Name</div><div class="form-value" id="f1">Jessica</div></div>
+          <div class="form-field"><div class="form-label">Last Name</div><div class="form-value" id="f2">Martinez</div></div>
+          <div class="form-field"><div class="form-label">Phone</div><div class="form-value" id="f3">305.492.7831</div></div>
+          <div class="form-field"><div class="form-label">Email</div><div class="form-value" id="f4">jessica@kw...</div></div>
+          <div class="form-field"><div class="form-label">Role</div><div class="form-value" id="f5">RE Agent</div></div>
+          <div class="form-field"><div class="form-label">Company</div><div class="form-value" id="f6">Keller Williams</div></div>
+          <div class="form-field"><div class="form-label">Date Added</div><div class="form-value" id="f7">5/30/2026</div></div>
+          <div class="form-field"><div class="form-label">Location</div><div class="form-value" id="f8">Coral Gables</div></div>
+        </div>
+        <div class="action-row">
+          <div class="action-btn-sm btn-gold">✉️ Email</div>
+          <div class="action-btn-sm btn-purple">💬 Text</div>
+          <div class="action-btn-sm btn-blue">📱 Save<br>to Phone</div>
+          <div class="action-btn-sm btn-green">➔ Add to<br>Database</div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Email -->
+      <div class="step-screen" id="step4">
+        <div class="result-tabs">
+          <div class="result-tab active-tab" id="tab-email" onclick="showTab('email')">✉️ Email</div>
+          <div class="result-tab" id="tab-text" onclick="showTab('text')">💬 Text</div>
+          <div class="result-tab" id="tab-contact" onclick="showTab('contact')">📋 Contact</div>
+        </div>
+        <!-- Email view -->
+        <div id="view-email" class="email-preview">
+          <div class="email-subject">Nice meeting you today!</div>
+          <div id="emailText" style="white-space:pre-wrap;word-break:break-word;overflow-wrap:break-word;"></div>
+        </div>
+        <!-- Text view -->
+        <div id="view-text" style="display:none;flex:1;flex-direction:column;gap:10px;">
+          <!-- To bar -->
+          <div style="background:#13131a;border:1px solid #1e1e30;border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;">
+            <div style="font-size:9px;color:#555;flex-shrink:0;">To:</div>
+            <div style="font-size:11px;color:#a78bfa;">Jessica Martinez · 305.492.7831</div>
+          </div>
+          <!-- Chat bubble area -->
+          <div style="background:#13131a;border:1px solid #1e1e30;border-radius:10px;padding:14px;flex:1;">
+            <div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;">Message</div>
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <div style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#f0c060,#c9933a);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">R</div>
+              <div style="background:#2d1060;border-radius:4px 12px 12px 12px;padding:10px 12px;font-size:11px;color:#e8e4dc;line-height:1.7;word-break:break-word;white-space:pre-wrap;max-width:calc(100% - 36px);" id="textPreview"></div>
+            </div>
+          </div>
+        </div>
+        <!-- Contact view -->
+        <div id="view-contact" style="display:none;flex:1">
+          <div style="background:#13131a;border:1px solid #1e1e30;border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:8px;">
+            <div style="font-size:16px;font-weight:700;color:#f0c060;font-family:Syne,sans-serif;">Jessica Martinez</div>
+            <div style="font-size:11px;color:#a78bfa;">Keller Williams · RE Agent</div>
+            <div style="font-size:11px;color:#888;margin-top:4px;">📞 305.492.7831</div>
+            <div style="font-size:11px;color:#888;">✉️ jessica@kwmiami.com</div>
+            <div style="font-size:11px;color:#888;">🌐 jessicamartinez.com</div>
+            <div style="font-size:11px;color:#888;">📍 Coral Gables, FL</div>
+            <div style="margin-top:6px;background:rgba(201,147,58,0.1);border:1px solid rgba(201,147,58,0.2);border-radius:8px;padding:8px;font-size:10px;color:#c9933a;text-align:center;">✦ Ready to save to phone</div>
+          </div>
+        </div>
+        <div class="action-row">
+          <div class="action-btn-sm btn-gold" style="flex:1.2">📋 Copy</div>
+          <div class="action-btn-sm btn-blue">📱 Save<br>to Phone</div>
+          <div class="action-btn-sm btn-green">➔ Add to<br>Database</div>
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-overlay" id="successOverlay">
+        <div class="success-icon">✅</div>
+        <div class="success-text">All Done!</div>
+        <div class="success-items">
+          <div class="success-item">📱 Contact saved to phone</div>
+          <div class="success-item">✉️ Email drafted in Gmail</div>
+          <div class="success-item">💬 Text message ready</div>
+          <div class="success-item">📊 Added to database</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="steps-indicator">
+  <div class="dot active" onclick="goToStep(1)"></div>
+  <div class="dot" onclick="goToStep(2)"></div>
+  <div class="dot" onclick="goToStep(3)"></div>
+  <div class="dot" onclick="goToStep(4)"></div>
+</div>
+
+<div class="step-labels">
+  <div class="step-label active">Upload</div>
+  <div class="step-label">Extract</div>
+  <div class="step-label">Review</div>
+  <div class="step-label">Send</div>
+</div>
+
+<button class="replay-btn" onclick="startDemo()">↺ REPLAY DEMO</button>
+
+<script>
+let timeouts = [];
+
+const emailContent = `Hi Jessica,
+
+It was so great meeting you today!
+
+I'd love to connect soon — I think we could do some great things together for your clients.
+
+Talk soon!
+
+[Your Name]
+[Your Company]
+📞 [Your Phone]`;
+
+const textContent = `Hey Jessica! Great meeting you today 😊 Would love to connect soon and see how we can work together. Feel free to reach out anytime! — [Your Name] 📞 [Your Phone]`;
+
+function clearTimeouts() { timeouts.forEach(t => clearTimeout(t)); timeouts = []; }
+function t(fn, delay) { timeouts.push(setTimeout(fn, delay)); }
+
+function goToStep(n) {
+  document.querySelectorAll('.step-screen').forEach((s, i) => s.classList.toggle('active', i + 1 === n));
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i + 1 === n));
+  document.querySelectorAll('.step-label').forEach((l, i) => l.classList.toggle('active', i + 1 === n));
+}
+
+function showTab(tab) {
+  ['email','text','contact'].forEach(t => {
+    document.getElementById('view-' + t).style.display = t === tab ? (t === 'email' ? 'block' : 'flex') : 'none';
+    var tabEl = document.getElementById('tab-' + t);
+    if (tabEl) {
+      tabEl.classList.toggle('active-tab', t === tab);
+    }
+  });
+}
+
+function startDemo() {
+  clearTimeouts();
+  document.getElementById('cardPhoto').classList.remove('has-card');
+  document.getElementById('cardInner').classList.remove('visible');
+  document.getElementById('successOverlay').classList.remove('show');
+  document.getElementById('emailText').innerText = '';
+  document.querySelectorAll('.form-value').forEach(f => f.classList.remove('filled'));
+  goToStep(1);
+
+  t(() => { document.getElementById('cardPhoto').classList.add('has-card'); document.getElementById('cardInner').classList.add('visible'); }, 800);
+  t(() => goToStep(2), 2200);
+  t(() => {
+    goToStep(3);
+    ['f1','f2','f3','f4','f5','f6','f7','f8'].forEach((id, i) => {
+      t(() => document.getElementById(id).classList.add('filled'), i * 150);
+    });
+  }, 4200);
+  t(() => {
+    goToStep(4);
+    showTab('email');
+    document.getElementById('textPreview').innerText = '';
+    const el = document.getElementById('emailText');
+    el.innerText = '';
+    const text = emailContent;
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < text.length) { el.innerText += text[i]; i++; }
+      else clearInterval(interval);
+    }, 20);
+    timeouts.push(interval);
+  }, 7000);
+  // Switch to text tab
+  t(() => {
+    showTab('text');
+    const el = document.getElementById('textPreview');
+    el.innerText = '';
+    const text = textContent;
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < text.length) { el.innerText += text[i]; i++; }
+      else clearInterval(interval);
+    }, 22);
+    timeouts.push(interval);
+  }, 10500);
+  // Switch to contact tab
+  t(() => showTab('contact'), 13500);
+  t(() => document.getElementById('successOverlay').classList.add('show'), 15000);
+  t(() => document.getElementById('successOverlay').classList.remove('show'), 17500);
+  t(() => startDemo(), 19000);
+}
+
+startDemo();
+</script>
+</body>
+</html>
