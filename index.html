@@ -106,7 +106,6 @@
     font-weight: 700 !important;
     letter-spacing: 0.08em !important;
   }
-
   /* ── HERO ── */
   .hero {
     min-height: 100vh;
@@ -629,7 +628,7 @@
     <li><a href="#features">Features</a></li>
     <li><a href="#how">How it Works</a></li>
     <li><a href="#pricing">Pricing</a></li>
-    <li><a href="#signup" class="nav-cta">Get Started</a></li>
+    <li><a href="signup.html" class="nav-cta">Get Started</a></li>
   </ul>
 </nav>
 
@@ -677,8 +676,8 @@
   </p>
 
   <div class="hero-buttons">
-    <a href="#signup" class="btn-primary">Start Free Trial</a>
-    <a href="#how" class="btn-secondary">See How It Works</a>
+    <a href="signup.html" class="btn-primary">Get Started Today</a>
+    <a href="#demo" class="btn-secondary">See It In Action</a>
   </div>
 
   <div class="hero-scroll">
@@ -742,8 +741,8 @@
         <line x1="24" y1="14" x2="24" y2="34" stroke="#c9933a" stroke-width="1" opacity="0.2"/>
         <line x1="32" y1="14" x2="32" y2="34" stroke="#c9933a" stroke-width="1" opacity="0.2"/>
       </svg>
-      <div class="feature-title">Google Sheets Sync</div>
-      <div class="feature-desc">Every contact is automatically added to your Google Sheet — your CRM, your data, always in your control.</div>
+      <div class="feature-title">Your CRM Hub</div>
+      <div class="feature-desc">Every contact flows into HiveFlow's built-in CRM — your central hub. Stay organized, never lose a contact, and connect to your other CRMs so your data feeds everywhere it needs to go.</div>
     </div>
 
     <div class="feature-card">
@@ -807,8 +806,8 @@
     <div class="step">
       <div class="step-num">4</div>
       <div class="step-content">
-        <div class="step-title">Data Goes to Your Sheet</div>
-        <div class="step-desc">Tap Add to Sheet — the contact is logged in your Google Sheets CRM instantly. Your pipeline stays current without lifting a finger.</div>
+        <div class="step-title">Saved to Your CRM Hub</div>
+        <div class="step-desc">Tap Add to HiveFlow — the contact is saved to your built-in CRM instantly. From there it feeds into your other CRMs automatically. One place. Every tool. Always in sync.</div>
       </div>
     </div>
   </div>
@@ -823,27 +822,331 @@
   <p class="testimonial-author">— Ronald Cepeda, The Mortgage Coach · PMF Inc.</p>
 </div>
 
+
+<!-- ── ANIMATED DEMO ── -->
+<div id="demo" style="background:#0a0a0f;border-top:1px solid rgba(201,147,58,0.08);border-bottom:1px solid rgba(201,147,58,0.08);padding:80px 40px;text-align:center;">
+  <p style="font-family:Syne,sans-serif;font-size:14px;letter-spacing:0.4em;text-transform:uppercase;color:#c9933a;margin-bottom:16px;font-weight:700;">See It In Action</p>
+  <h2 style="font-family:Cormorant Garamond,serif;font-size:clamp(36px,5vw,56px);font-weight:700;line-height:1.1;margin-bottom:12px;">From Card to <em style="font-style:italic;color:#f0c060;">Connected</em><br>in 30 Seconds</h2>
+  <p style="font-size:15px;color:#e8e2d8;max-width:500px;margin:0 auto 48px;line-height:1.7;">Click through each step below — this is exactly how HiveFlow works.</p>
+
+  <div style="max-width:320px;margin:0 auto;">
+  <style>
+    .dp{width:300px;height:620px;background:#0f0f18;border-radius:40px;border:2px solid #1e1e30;box-shadow:0 0 80px rgba(201,147,58,0.15),0 40px 80px rgba(0,0,0,0.5);overflow:hidden;position:relative;margin:0 auto 24px;}
+    .dp::before{content:'';position:absolute;top:12px;left:50%;transform:translateX(-50%);width:80px;height:20px;background:#08070e;border-radius:20px;z-index:10;}
+    .dsc{width:100%;height:100%;position:relative;overflow:hidden;}
+    .ds{position:absolute;inset:0;padding:48px 20px 20px;display:flex;flex-direction:column;opacity:0;transition:opacity 0.4s ease;pointer-events:none;}
+    .ds.active{opacity:1;pointer-events:all;}
+    .dh{font-family:'Syne',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#c9933a;text-align:center;margin-bottom:16px;}
+    .dcp{width:100%;height:155px;background:linear-gradient(135deg,#1a1a28,#12122a);border-radius:12px;border:2px dashed #2a2a45;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;position:relative;overflow:hidden;transition:all 0.3s;cursor:pointer;}
+    .dcp:hover{border-color:rgba(201,147,58,0.5);}
+    .dcp.hc{border-color:#c9933a;background:linear-gradient(135deg,#1a1400,#0f0c00);}
+    .dci{width:85%;height:78%;background:linear-gradient(135deg,#1a1a2e,#0d0d20);border:1px solid #2d2d50;border-radius:8px;position:absolute;display:flex;flex-direction:column;justify-content:center;padding:12px 14px;opacity:0;transform:scale(0.9);transition:all 0.4s ease;}
+    .dci.vis{opacity:1;transform:scale(1);}
+    .dco2{font-size:9px;color:#7c3aed;font-family:'Syne',sans-serif;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:4px;}
+    .dcn2{font-size:12px;font-weight:700;color:#e8e4dc;font-family:'Syne',sans-serif;}
+    .dct2{font-size:8px;color:#a78bfa;margin-top:1px;}
+    .dci2{font-size:7px;color:#666;margin-top:6px;line-height:1.8;}
+    .dxb{width:100%;background:linear-gradient(135deg,#f0c060,#c9933a);color:#08070e;border:none;padding:12px;border-radius:10px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;cursor:pointer;margin-top:auto;transition:opacity 0.2s;}
+    .dxb:hover{opacity:0.85;}
+    .dex{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+    .dhx{width:64px;height:64px;animation:dHxR 2s linear infinite;filter:drop-shadow(0 0 16px rgba(201,147,58,0.6));}
+    @keyframes dHxR{to{transform:rotate(360deg);}}
+    .dext{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#f0c060;letter-spacing:0.1em;}
+    .dexs{font-size:11px;color:#555;text-align:center;}
+    .dsl{position:absolute;left:20px;right:20px;height:2px;background:linear-gradient(90deg,transparent,#f0c060,transparent);animation:dScan 1.5s ease-in-out infinite;box-shadow:0 0 8px rgba(240,192,96,0.8);}
+    @keyframes dScan{0%{top:80px;opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{top:500px;opacity:0;}}
+    .dfh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+    .dft{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em;color:#f0c060;}
+    .dfb{font-size:9px;color:#c9933a;border:1px solid rgba(201,147,58,0.3);padding:2px 7px;border-radius:4px;}
+    .dfg{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:10px;}
+    .dff{background:#13131a;border:1px solid #1e1e30;border-radius:7px;padding:7px 9px;}
+    .dfl{font-size:8px;color:#444;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;}
+    .dfv{font-size:10px;color:#333;transition:color 0.3s;}
+    .dfv.fi{color:#e8e4dc;}
+    .dar{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:auto;}
+    .dab{padding:8px 3px;border-radius:8px;font-size:9px;font-weight:700;text-align:center;cursor:pointer;line-height:1.4;transition:all 0.15s;}
+    .dab:hover{transform:scale(1.05);}
+    .dag{background:rgba(201,147,58,0.15);border:1px solid rgba(201,147,58,0.3);color:#f0c060;}
+    .dap{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:#a78bfa;}
+    .dab2{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd;}
+    .dg{background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);color:#86efac;}
+    .drt{display:flex;gap:5px;margin-bottom:10px;}
+    .drtb{flex:1;padding:7px 3px;border-radius:7px;font-size:10px;font-weight:700;text-align:center;cursor:pointer;background:#13131a;border:1px solid #1e1e30;color:#444;transition:all 0.2s;}
+    .drtb.on{background:rgba(201,147,58,0.1);border-color:rgba(201,147,58,0.3);color:#f0c060;}
+    .dep{flex:1;background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:10px;overflow:hidden;}
+    .des{font-size:10px;font-weight:700;color:#e8e4dc;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #1e1e30;}
+    .deb{font-size:9px;color:#777;line-height:1.7;white-space:pre-wrap;word-break:break-word;}
+    .dov{position:absolute;inset:0;background:rgba(8,7,14,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;transition:opacity 0.5s;pointer-events:none;}
+    .dov.show{opacity:1;}
+    .doi{font-size:44px;}
+    .dot2{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#f0c060;}
+    .dosi{font-size:11px;color:#777;line-height:1.8;}
+    .ddots{display:flex;gap:7px;justify-content:center;margin-bottom:14px;}
+    .ddot{width:7px;height:7px;border-radius:50%;background:#1e1e30;cursor:pointer;transition:all 0.3s;}
+    .ddot.on{background:#c9933a;width:18px;border-radius:3px;}
+    .drpl{background:transparent;border:1px solid rgba(201,147,58,0.3);color:#c9933a;padding:9px 24px;border-radius:6px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;cursor:pointer;transition:all 0.2s;}
+    .drpl:hover{background:rgba(201,147,58,0.1);}
+  </style>
+
+  <div class="dp">
+    <div class="dsc">
+
+      <!-- STEP 1: Upload -->
+      <div class="ds active" id="ds1">
+        <div class="dh">📇 Scan Business Card</div>
+        <div class="dcp" id="dcp" onclick="dCardClick()">
+          <div class="dci" id="dci">
+            <div class="dco2">Keller Williams</div>
+            <div class="dcn2">JESSICA MARTINEZ</div>
+            <div class="dct2">Realtor® · Luxury Specialist</div>
+            <div class="dci2">📞 305.492.7831<br>✉️ jessica@kwmiami.com<br>📍 Coral Gables, FL</div>
+          </div>
+          <span style="font-size:26px;">📸</span>
+          <span style="font-size:11px;color:#444;">Tap to upload card</span>
+        </div>
+        <div style="flex:1;"></div>
+        <button class="dxb" onclick="dExtract()">✦ EXTRACT CARD</button>
+      </div>
+
+      <!-- STEP 2: Extracting -->
+      <div class="ds" id="ds2">
+        <div class="dex">
+          <svg class="dhx" viewBox="0 0 64 64" fill="none">
+            <polygon points="32,4 56,17 56,43 32,56 8,43 8,17" fill="none" stroke="url(#dg1)" stroke-width="1.5"/>
+            <polygon points="32,11 50,21 50,39 32,49 14,39 14,21" fill="rgba(201,147,58,0.1)" stroke="url(#dg1)" stroke-width="1"/>
+            <rect x="29.5" y="23" width="5" height="14" rx="1.5" fill="url(#dg1)"/>
+            <rect x="24" y="27" width="16" height="5" rx="1.5" fill="url(#dg1)"/>
+            <defs><linearGradient id="dg1" x1="8" y1="4" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0c060"/><stop offset="100%" stop-color="#c9933a"/></linearGradient></defs>
+          </svg>
+          <div class="dext">EXTRACTING...</div>
+          <div class="dexs">AI is reading the card<br>and building your contact</div>
+        </div>
+        <div class="dsl"></div>
+      </div>
+
+      <!-- STEP 3: Form -->
+      <div class="ds" id="ds3">
+        <div class="dfh">
+          <div class="dft">Contact Details</div>
+          <div class="dfb">✦ AI Filled</div>
+        </div>
+        <div class="dfg">
+          <div class="dff"><div class="dfl">First Name</div><div class="dfv" id="dv1">Jessica</div></div>
+          <div class="dff"><div class="dfl">Last Name</div><div class="dfv" id="dv2">Martinez</div></div>
+          <div class="dff"><div class="dfl">Phone</div><div class="dfv" id="dv3">305.492.7831</div></div>
+          <div class="dff"><div class="dfl">Email</div><div class="dfv" id="dv4">jessica@kw...</div></div>
+          <div class="dff"><div class="dfl">Role</div><div class="dfv" id="dv5">RE Agent</div></div>
+          <div class="dff"><div class="dfl">Company</div><div class="dfv" id="dv6">Keller Williams</div></div>
+          <div class="dff"><div class="dfl">Date Added</div><div class="dfv" id="dv7">Today</div></div>
+          <div class="dff"><div class="dfl">Location</div><div class="dfv" id="dv8">Coral Gables</div></div>
+        </div>
+        <div class="dar">
+          <div class="dab dag" onclick="dGoStep(4,'email')">✉️<br>Email</div>
+          <div class="dab dap" onclick="dGoStep(4,'text')">💬<br>Text</div>
+          <div class="dab dab2" onclick="dGoStep(4,'contact')">📱<br>Save</div>
+          <div class="dab dg" onclick="dGoStep(4,'success')">➔<br>CRM</div>
+        </div>
+      </div>
+
+      <!-- STEP 4: Results -->
+      <div class="ds" id="ds4">
+        <div class="drt">
+          <div class="drtb on" id="dtb-email" onclick="dTab('email')">✉️ Email</div>
+          <div class="drtb" id="dtb-text" onclick="dTab('text')">💬 Text</div>
+          <div class="drtb" id="dtb-contact" onclick="dTab('contact')">📋 Contact</div>
+        </div>
+        <!-- Email -->
+        <div id="dv-email" class="dep">
+          <div class="des">Nice meeting you today!</div>
+          <div class="deb" id="demailbody"></div>
+        </div>
+        <!-- Text -->
+        <div id="dv-text" style="display:none;flex:1;flex-direction:column;gap:8px;">
+          <div style="background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:9px 12px;font-size:10px;color:#a78bfa;">To: Jessica Martinez · 305.492.7831</div>
+          <div style="background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:12px;flex:1;display:flex;gap:8px;align-items:flex-start;">
+            <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#f0c060,#c9933a);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;font-weight:700;">R</div>
+            <div style="background:#2d1060;border-radius:4px 12px 12px 12px;padding:9px 11px;font-size:10px;color:#e8e4dc;line-height:1.7;word-break:break-word;" id="dtextbody"></div>
+          </div>
+        </div>
+        <!-- Contact -->
+        <div id="dv-contact" style="display:none;flex:1;">
+          <div style="background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:13px;display:flex;flex-direction:column;gap:7px;">
+            <div style="font-size:14px;font-weight:700;color:#f0c060;font-family:Syne,sans-serif;">Jessica Martinez</div>
+            <div style="font-size:10px;color:#a78bfa;">Keller Williams · RE Agent</div>
+            <div style="font-size:10px;color:#888;">📞 305.492.7831</div>
+            <div style="font-size:10px;color:#888;">✉️ jessica@kwmiami.com</div>
+            <div style="font-size:10px;color:#888;">📍 Coral Gables, FL</div>
+            <div style="background:rgba(201,147,58,0.1);border:1px solid rgba(201,147,58,0.2);border-radius:7px;padding:7px;font-size:10px;color:#c9933a;text-align:center;">✦ Ready to save to phone</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">
+          <div class="dab dag" style="padding:9px;" onclick="dGoStep(3,null)">← Back</div>
+          <div class="dab dg" style="padding:9px;" onclick="dShowSuccess()">✓ Done</div>
+        </div>
+      </div>
+
+      <!-- SUCCESS overlay -->
+      <div class="dov" id="dsuc">
+        <div class="doi">🐝</div>
+        <div class="dot2">All Done!</div>
+        <div class="dosi">
+          📱 Contact saved to phone<br>
+          ✉️ Email drafted in Gmail<br>
+          💬 Text message ready<br>
+          🐝 Added to HiveFlow CRM
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="ddots">
+    <div class="ddot on" onclick="dGoStep(1,null)"></div>
+    <div class="ddot" onclick="dGoStep(2,null)"></div>
+    <div class="ddot" onclick="dGoStep(3,null)"></div>
+    <div class="ddot" onclick="dGoStep(4,null)"></div>
+  </div>
+  <button class="drpl" onclick="dReset()">↺ REPLAY</button>
+
+  <script>
+  const dEmail = `Hi Jessica,
+
+It was so great meeting you today at the event!
+
+I'd love to connect and explore how we can work together for your clients.
+
+Ronald Cepeda
+The Mortgage Coach
+📞 305-785-3915`;
+  const dText = `Hey Jessica! Great meeting you today 😊 Would love to connect and see how we can collaborate. Feel free to reach out! — Ronald 📞 305-785-3915`;
+  let dAuto=[];
+
+  function dClear(){dAuto.forEach(t=>clearTimeout(t));dAuto=[];}
+  function dT(fn,ms){dAuto.push(setTimeout(fn,ms));}
+
+  function dSetStep(n){
+    document.querySelectorAll('.ds').forEach((s,i)=>s.classList.toggle('active',i+1===n));
+    document.querySelectorAll('.ddot').forEach((d,i)=>d.classList.toggle('on',i+1===n));
+  }
+
+  function dGoStep(n, tab){
+    dClear();
+    if(n===3){
+      document.getElementById('dsuc').classList.remove('show');
+    }
+    dSetStep(n);
+    if(tab) dTab(tab);
+  }
+
+  function dTab(tab){
+    ['email','text','contact'].forEach(t=>{
+      const v=document.getElementById('dv-'+t);
+      const b=document.getElementById('dtb-'+t);
+      if(v) v.style.display=t===tab?(t==='email'?'block':'flex'):'none';
+      if(b) b.classList.toggle('on',t===tab);
+    });
+    if(tab==='email' && !document.getElementById('demailbody').innerText){
+      let i=0;const el=document.getElementById('demailbody');
+      const iv=setInterval(()=>{if(i<dEmail.length){el.innerText+=dEmail[i];i++;}else clearInterval(iv);},18);
+    }
+    if(tab==='text' && !document.getElementById('dtextbody').innerText){
+      let i=0;const el=document.getElementById('dtextbody');
+      const iv=setInterval(()=>{if(i<dText.length){el.innerText+=dText[i];i++;}else clearInterval(iv);},20);
+    }
+  }
+
+  function dCardClick(){
+    document.getElementById('dcp').classList.add('hc');
+    document.getElementById('dci').classList.add('vis');
+  }
+
+  function dExtract(){
+    dClear();
+    dSetStep(2);
+    dT(()=>{
+      dSetStep(3);
+      ['dv1','dv2','dv3','dv4','dv5','dv6','dv7','dv8'].forEach((id,i)=>{
+        dT(()=>document.getElementById(id).classList.add('fi'),i*120);
+      });
+    },2000);
+  }
+
+  function dShowSuccess(){
+    document.getElementById('dsuc').classList.add('show');
+    dT(()=>{
+      document.getElementById('dsuc').classList.remove('show');
+      dReset();
+    },3000);
+  }
+
+  function dReset(){
+    dClear();
+    document.getElementById('dcp').classList.remove('hc');
+    document.getElementById('dci').classList.remove('vis');
+    document.getElementById('dsuc').classList.remove('show');
+    document.getElementById('demailbody').innerText='';
+    document.getElementById('dtextbody').innerText='';
+    document.querySelectorAll('.dfv').forEach(f=>f.classList.remove('fi'));
+    dSetStep(1);
+    // Auto demo
+    dT(dCardClick, 1000);
+    dT(dExtract, 2500);
+    dT(()=>{dGoStep(4,'email');},5500);
+    dT(()=>dTab('text'),9000);
+    dT(()=>dTab('contact'),12000);
+    dT(dShowSuccess,14500);
+  }
+  dReset();
+  </script>
+  </div>
+</div>
+
 <!-- ── PRICING ── -->
 <section id="pricing">
   <p class="section-eyebrow">Simple Pricing</p>
   <h2 class="section-title">One Plan.<br><em>Everything Included.</em></h2>
-  <p class="section-sub">No tiers, no hidden fees. Just the tools you need to close more deals.</p>
+  <p class="section-sub">Two simple plans. No hidden fees. Less than a cup of coffee a day.</p>
 
-  <div class="pricing-card">
-    <div class="pricing-badge">Solo Plan · Most Popular</div>
-    <div class="pricing-price"><sup>$</sup>29</div>
-    <div class="pricing-period">per month · cancel anytime</div>
-    <ul class="pricing-features">
-      <li>Unlimited business card scans</li>
-      <li>AI contact extraction (27 fields)</li>
-      <li>Auto Gmail draft generation</li>
-      <li>Personalized pitch email + text</li>
-      <li>Save to Phone (QR code)</li>
-      <li>Google Sheets sync</li>
-      <li>Mobile + desktop access</li>
-      <li>Your data, your sheet, always</li>
-    </ul>
-    <a href="#signup" class="btn-primary" style="display:block;text-align:center">Start Free Trial →</a>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:820px;margin:0 auto;">
+
+    <!-- STARTER -->
+    <div class="pricing-card">
+      <div class="pricing-badge">Starter · Solo</div>
+      <div class="pricing-price"><sup>$</sup>15</div>
+      <div class="pricing-period">per month · cancel anytime</div>
+      <ul class="pricing-features">
+        <li>Unlimited biz card scans</li>
+        <li>AI contact extraction (27 fields)</li>
+        <li>Email draft → straight to your email drafts</li>
+        <li>Text message generation</li>
+        <li>Save to phone</li>
+        <li>Built-in CRM hub</li>
+        <li>API connections available</li>
+        <li>500 contacts</li>
+      </ul>
+      <a href="signup.html" class="btn-primary" style="display:block;text-align:center">Get Started →</a>
+    </div>
+
+    <!-- HIVE MIND -->
+    <div class="pricing-card" style="border-color:rgba(201,147,58,0.5);background:linear-gradient(135deg,#0f0d1a,#1a1400);">
+      <div class="pricing-badge" style="background:rgba(201,147,58,0.25);">🐝 Hive Mind · Teams</div>
+      <div class="pricing-price"><sup>$</sup>30</div>
+      <div class="pricing-period">per month · 3 users included</div>
+      <ul class="pricing-features">
+        <li>Everything in Starter</li>
+        <li>Unlimited contacts</li>
+        <li>Shared team CRM hub</li>
+        <li>Connect to external CRMs</li>
+        <li>API connections available</li>
+        <li>Pipeline tracking</li>
+        <li>Export to CSV / Sheets</li>
+        <li>Priority support</li>
+        <li>Early access to new tools</li>
+        <li>Extra seats at $10/seat</li>
+      </ul>
+      <a href="signup.html" class="btn-primary" style="display:block;text-align:center;">Join the Hive →</a>
+    </div>
+
   </div>
 </section>
 
@@ -852,24 +1155,18 @@
   <div class="cta-glow"></div>
   <p class="section-eyebrow">Join HiveFlo</p>
   <h2 class="section-title" style="margin-bottom:16px">Ready to Work <em>Smarter?</em></h2>
-  <p class="section-sub" style="margin-bottom:40px">Start your free trial today. No credit card required.</p>
-
-  <form onsubmit="handleSignup(event)" style="max-width:420px;margin:0 auto;display:flex;flex-direction:column;gap:14px">
-    <input type="text" placeholder="Full Name" style="background:rgba(255,255,255,0.05);border:1px solid rgba(201,147,58,0.2);color:#f5f0e8;padding:16px 20px;border-radius:8px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none" required>
-    <input type="email" placeholder="Email Address" style="background:rgba(255,255,255,0.05);border:1px solid rgba(201,147,58,0.2);color:#f5f0e8;padding:16px 20px;border-radius:8px;font-size:15px;font-family:'DM Sans',sans-serif;outline:none" required>
-    <button type="submit" class="btn-primary" style="border:none;cursor:pointer;font-size:14px">Create My Account →</button>
-    <p style="font-size:11px;color:#4a4060;text-align:center;letter-spacing:0.05em">Free 7-day trial · No credit card required · Cancel anytime</p>
-  </form>
-  <div id="signup-status" style="margin-top:16px;font-size:14px;color:#c9933a;text-align:center;min-height:20px"></div>
+  <p class="section-sub" style="margin-bottom:40px">Pick your plan and start building your network smarter today.</p>
+  <a href="signup.html" class="btn-primary" style="display:inline-block;font-size:15px;padding:18px 48px;">Create My Account →</a>
+  <p style="font-size:12px;color:#4a4060;text-align:center;letter-spacing:0.05em;margin-top:16px;">Cancel anytime · Secure payments by Stripe</p>
 </div>
 
 <!-- ── FOOTER ── -->
 <footer>
   <div class="footer-copy">© 2026 HiveFlo · hiveflo.app · Built with faith 🙏</div>
   <ul class="footer-links">
-    <li><a href="#">Privacy</a></li>
-    <li><a href="#">Terms</a></li>
-    <li><a href="mailto:ronald.cepeda@pmfmortgage.com">Contact</a></li>
+    <li><a href="privacy.html">Privacy</a></li>
+    <li><a href="terms.html">Terms</a></li>
+    <li><a href="mailto:support@hiveflo.app">Contact</a></li>
   </ul>
 </footer>
 
