@@ -18,609 +18,93 @@
     --purple: #7c3aed;
     --text-muted: #6a6070;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--dark);
-    color: var(--white);
-    font-family: 'DM Sans', sans-serif;
-    overflow-x: hidden;
-  }
-
-  /* ── NOISE TEXTURE OVERLAY ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.4;
-  }
-
-  /* ── NAV ── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 20px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: linear-gradient(180deg, rgba(8,7,14,0.95) 0%, transparent 100%);
-    backdrop-filter: blur(8px);
-  }
-
-  .nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-  }
-
-  .nav-logo-mark {
-    width: 36px;
-    height: 36px;
-  }
-
-  .nav-wordmark {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: #ffe580;
-    text-shadow: 0 0 20px rgba(255,220,80,0.5);
-  }
-
-  .nav-wordmark span {
-    color: var(--white);
-    font-style: italic;
-  }
-
-  .nav-links {
-    display: flex;
-    align-items: center;
-    gap: 32px;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #c8c0b8;
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
+  body { background: var(--dark); color: var(--white); font-family: 'DM Sans', sans-serif; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E"); pointer-events: none; z-index: 1000; opacity: 0.4; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(180deg, rgba(8,7,14,0.95) 0%, transparent 100%); backdrop-filter: blur(8px); }
+  .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+  .nav-logo-mark { width: 36px; height: 36px; }
+  .nav-wordmark { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; letter-spacing: 0.04em; color: #ffe580; text-shadow: 0 0 20px rgba(255,220,80,0.5); }
+  .nav-wordmark span { color: var(--white); font-style: italic; }
+  .nav-links { display: flex; align-items: center; gap: 32px; list-style: none; }
+  .nav-links a { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #c8c0b8; text-decoration: none; transition: color 0.2s; }
   .nav-links a:hover { color: var(--white); }
-
-  .nav-cta {
-    background: linear-gradient(135deg, var(--gold), var(--gold-dim));
-    color: var(--dark) !important;
-    padding: 10px 22px;
-    border-radius: 6px;
-    font-weight: 700 !important;
-    letter-spacing: 0.08em !important;
-  }
-  /* ── HERO ── */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 120px 40px 80px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-glow {
-    position: absolute;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, rgba(201,147,58,0.12) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  .hero-honeycomb {
-    margin-bottom: 40px;
-    animation: float 4s ease-in-out infinite;
-    filter: drop-shadow(0 0 30px rgba(201,147,58,0.4));
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .hero-eyebrow {
-    font-family: 'Syne', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: #ffe580;
-    margin-bottom: 20px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 0.3s;
-    text-shadow: 0 0 30px rgba(255,220,80,0.6);
-    font-weight: 700;
-  }
-
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(52px, 8vw, 96px);
-    font-weight: 700;
-    line-height: 1.0;
-    letter-spacing: -0.01em;
-    margin-bottom: 24px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 0.5s;
-  }
-
-  .hero-title em {
-    font-style: italic;
-    color: var(--gold-light);
-  }
-
-  .hero-subtitle {
-    font-size: 16px;
-    line-height: 1.7;
-    color: #e8e2d8;
-    max-width: 520px;
-    margin: 0 auto 40px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 0.7s;
-  }
-
-  .hero-buttons {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 0.9s;
-  }
-
-  .btn-primary {
-    background: linear-gradient(135deg, var(--gold-light), var(--gold));
-    color: var(--dark);
-    padding: 16px 36px;
-    border-radius: 8px;
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.3s;
-    box-shadow: 0 0 40px rgba(201,147,58,0.3);
-  }
-
-  .btn-primary:hover {
-    box-shadow: 0 0 60px rgba(201,147,58,0.5);
-    transform: translateY(-2px);
-  }
-
-  .btn-secondary {
-    background: transparent;
-    color: var(--white);
-    padding: 16px 36px;
-    border-radius: 8px;
-    border: 1px solid rgba(255,255,255,0.15);
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    text-decoration: none;
-    transition: all 0.3s;
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--gold);
-    color: var(--gold-light);
-  }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease forwards 1.2s;
-  }
-
-  .hero-scroll span {
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  .scroll-line {
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(180deg, var(--gold), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
-
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── DIVIDER ── */
-  .divider {
-    width: 1px;
-    height: 80px;
-    background: linear-gradient(180deg, transparent, var(--gold-dim), transparent);
-    margin: 0 auto;
-  }
-
-  /* ── SECTION ── */
-  section {
-    padding: 100px 40px;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-
-  .section-eyebrow {
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--gold);
-    text-align: center;
-    margin-bottom: 16px;
-    font-weight: 700;
-  }
-
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(36px, 5vw, 60px);
-    font-weight: 700;
-    text-align: center;
-    line-height: 1.1;
-    margin-bottom: 16px;
-  }
-
+  .nav-cta { background: linear-gradient(135deg, var(--gold), var(--gold-dim)); color: var(--dark) !important; padding: 10px 22px; border-radius: 6px; font-weight: 700 !important; letter-spacing: 0.08em !important; }
+  .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 120px 40px 80px; position: relative; overflow: hidden; }
+  .hero-glow { position: absolute; top: 20%; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(201,147,58,0.12) 0%, transparent 70%); pointer-events: none; }
+  .hero-honeycomb { margin-bottom: 40px; animation: float 4s ease-in-out infinite; filter: drop-shadow(0 0 30px rgba(201,147,58,0.4)); }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .hero-eyebrow { font-family: 'Syne', sans-serif; font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: #ffe580; margin-bottom: 20px; opacity: 0; animation: fadeUp 0.8s ease forwards 0.3s; text-shadow: 0 0 30px rgba(255,220,80,0.6); font-weight: 700; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(52px, 8vw, 96px); font-weight: 700; line-height: 1.0; letter-spacing: -0.01em; margin-bottom: 24px; opacity: 0; animation: fadeUp 0.8s ease forwards 0.5s; }
+  .hero-title em { font-style: italic; color: var(--gold-light); }
+  .hero-subtitle { font-size: 16px; line-height: 1.7; color: #e8e2d8; max-width: 520px; margin: 0 auto 40px; opacity: 0; animation: fadeUp 0.8s ease forwards 0.7s; }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; opacity: 0; animation: fadeUp 0.8s ease forwards 0.9s; }
+  .btn-primary { background: linear-gradient(135deg, var(--gold-light), var(--gold)); color: var(--dark); padding: 16px 36px; border-radius: 8px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; box-shadow: 0 0 40px rgba(201,147,58,0.3); }
+  .btn-primary:hover { box-shadow: 0 0 60px rgba(201,147,58,0.5); transform: translateY(-2px); }
+  .btn-secondary { background: transparent; color: var(--white); padding: 16px 36px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: all 0.3s; }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold-light); }
+  .hero-scroll { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0; animation: fadeUp 0.8s ease forwards 1.2s; }
+  .hero-scroll span { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-muted); }
+  .scroll-line { width: 1px; height: 40px; background: linear-gradient(180deg, var(--gold), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+  @keyframes scrollPulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .divider { width: 1px; height: 80px; background: linear-gradient(180deg, transparent, var(--gold-dim), transparent); margin: 0 auto; }
+  section { padding: 100px 40px; max-width: 1100px; margin: 0 auto; }
+  .section-eyebrow { font-family: 'Syne', sans-serif; font-size: 14px; letter-spacing: 0.4em; text-transform: uppercase; color: var(--gold); text-align: center; margin-bottom: 16px; font-weight: 700; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 5vw, 60px); font-weight: 700; text-align: center; line-height: 1.1; margin-bottom: 16px; }
   .section-title em { font-style: italic; color: var(--gold-light); }
-
-  .section-sub {
-    font-size: 15px;
-    color: #e8e2d8;
-    text-align: center;
-    max-width: 500px;
-    margin: 0 auto 64px;
-    line-height: 1.7;
-  }
-
-  /* ── FEATURES ── */
-  .features-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-  }
-
-  @media (max-width: 768px) {
-    .features-grid { grid-template-columns: 1fr; }
-    nav .nav-links { display: none; }
-  }
-
-  .feature-card {
-    background: var(--dark-2);
-    border: 1px solid rgba(201,147,58,0.1);
-    border-radius: 16px;
-    padding: 36px 28px;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .feature-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .feature-card:hover {
-    border-color: rgba(201,147,58,0.3);
-    transform: translateY(-4px);
-  }
-
+  .section-sub { font-size: 15px; color: #e8e2d8; text-align: center; max-width: 500px; margin: 0 auto 64px; line-height: 1.7; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } nav .nav-links { display: none; } }
+  .feature-card { background: var(--dark-2); border: 1px solid rgba(201,147,58,0.1); border-radius: 16px; padding: 36px 28px; transition: all 0.3s; position: relative; overflow: hidden; }
+  .feature-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0; transition: opacity 0.3s; }
+  .feature-card:hover { border-color: rgba(201,147,58,0.3); transform: translateY(-4px); }
   .feature-card:hover::before { opacity: 1; }
-
-  .feature-icon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 20px;
-  }
-
-  .feature-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: var(--white);
-  }
-
-  .feature-desc {
-    font-size: 14px;
-    color: #e8e2d8;
-    line-height: 1.7;
-  }
-
-  /* ── HOW IT WORKS ── */
-  .steps {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .step {
-    display: flex;
-    gap: 28px;
-    position: relative;
-    padding-bottom: 48px;
-  }
-
+  .feature-icon { width: 48px; height: 48px; margin-bottom: 20px; }
+  .feature-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--white); }
+  .feature-desc { font-size: 14px; color: #e8e2d8; line-height: 1.7; }
+  .steps { display: flex; flex-direction: column; gap: 0; max-width: 700px; margin: 0 auto; }
+  .step { display: flex; gap: 28px; position: relative; padding-bottom: 48px; }
   .step:last-child { padding-bottom: 0; }
-
-  .step-line {
-    position: absolute;
-    left: 19px;
-    top: 40px;
-    bottom: 0;
-    width: 1px;
-    background: linear-gradient(180deg, var(--gold-dim), transparent);
-  }
-
+  .step-line { position: absolute; left: 19px; top: 40px; bottom: 0; width: 1px; background: linear-gradient(180deg, var(--gold-dim), transparent); }
   .step:last-child .step-line { display: none; }
-
-  .step-num {
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    border-radius: 50%;
-    border: 1px solid var(--gold-dim);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--gold-light);
-    background: var(--dark-2);
-    position: relative;
-    z-index: 1;
-  }
-
+  .step-num { width: 40px; height: 40px; min-width: 40px; border-radius: 50%; border: 1px solid var(--gold-dim); display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; color: var(--gold-light); background: var(--dark-2); position: relative; z-index: 1; }
   .step-content { padding-top: 6px; }
-
-  .step-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .step-desc {
-    font-size: 14px;
-    color: #e8e2d8;
-    line-height: 1.7;
-  }
-
-  /* ── PRICING ── */
-  .pricing-card {
-    max-width: 420px;
-    margin: 0 auto;
-    background: var(--dark-2);
-    border: 1px solid rgba(201,147,58,0.3);
-    border-radius: 24px;
-    padding: 52px 44px;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .pricing-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold-light), var(--gold), transparent);
-  }
-
-  .pricing-badge {
-    display: inline-block;
-    background: rgba(201,147,58,0.15);
-    border: 1px solid rgba(201,147,58,0.3);
-    color: var(--gold-light);
-    font-family: 'Syne', sans-serif;
-    font-size: 9px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    padding: 6px 16px;
-    border-radius: 20px;
-    margin-bottom: 28px;
-  }
-
-  .pricing-price {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 80px;
-    font-weight: 700;
-    color: var(--gold-light);
-    line-height: 1;
-    margin-bottom: 4px;
-  }
-
-  .pricing-price sup {
-    font-size: 32px;
-    vertical-align: super;
-    color: var(--gold);
-  }
-
-  .pricing-period {
-    font-size: 13px;
-    color: #e8e2d8;
-    letter-spacing: 0.1em;
-    margin-bottom: 36px;
-  }
-
-  .pricing-features {
-    list-style: none;
-    text-align: left;
-    margin-bottom: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .pricing-features li {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    font-size: 14px;
-    color: var(--cream);
-    line-height: 1.5;
-  }
-
-  .pricing-features li::before {
-    content: '✦';
-    color: var(--gold);
-    font-size: 10px;
-    margin-top: 4px;
-    flex-shrink: 0;
-  }
-
-  /* ── TESTIMONIAL ── */
-  .testimonial-section {
-    background: var(--dark-2);
-    border-top: 1px solid rgba(201,147,58,0.08);
-    border-bottom: 1px solid rgba(201,147,58,0.08);
-    padding: 80px 40px;
-    text-align: center;
-  }
-
-  .testimonial-quote {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(24px, 3vw, 36px);
-    font-style: italic;
-    font-weight: 600;
-    max-width: 700px;
-    margin: 0 auto 24px;
-    line-height: 1.5;
-    color: var(--cream);
-  }
-
-  .testimonial-author {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--gold);
-  }
-
-  /* ── CTA SECTION ── */
-  .cta-section {
-    text-align: center;
-    padding: 120px 40px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, rgba(201,147,58,0.08) 0%, transparent 70%);
-    pointer-events: none;
-  }
-
-  /* ── FOOTER ── */
-  footer {
-    padding: 40px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: gap;
-  }
-
-  .footer-copy {
-    font-size: 12px;
-    color: var(--text-muted);
-    letter-spacing: 0.05em;
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 24px;
-    list-style: none;
-  }
-
-  .footer-links a {
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
+  .step-title { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .step-desc { font-size: 14px; color: #e8e2d8; line-height: 1.7; }
+  .pricing-card { max-width: 420px; margin: 0 auto; background: var(--dark-2); border: 1px solid rgba(201,147,58,0.3); border-radius: 24px; padding: 52px 44px; text-align: center; position: relative; overflow: hidden; }
+  .pricing-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold-light), var(--gold), transparent); }
+  .pricing-badge { display: inline-block; background: rgba(201,147,58,0.15); border: 1px solid rgba(201,147,58,0.3); color: var(--gold-light); font-family: 'Syne', sans-serif; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; padding: 6px 16px; border-radius: 20px; margin-bottom: 28px; }
+  .pricing-price { font-family: 'Cormorant Garamond', serif; font-size: 80px; font-weight: 700; color: var(--gold-light); line-height: 1; margin-bottom: 4px; }
+  .pricing-price sup { font-size: 32px; vertical-align: super; color: var(--gold); }
+  .pricing-period { font-size: 13px; color: #e8e2d8; letter-spacing: 0.1em; margin-bottom: 36px; }
+  .pricing-features { list-style: none; text-align: left; margin-bottom: 40px; display: flex; flex-direction: column; gap: 14px; }
+  .pricing-features li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--cream); line-height: 1.5; }
+  .pricing-features li::before { content: '✦'; color: var(--gold); font-size: 10px; margin-top: 4px; flex-shrink: 0; }
+  .testimonial-section { background: var(--dark-2); border-top: 1px solid rgba(201,147,58,0.08); border-bottom: 1px solid rgba(201,147,58,0.08); padding: 80px 40px; text-align: center; }
+  .testimonial-quote { font-family: 'Cormorant Garamond', serif; font-size: clamp(24px, 3vw, 36px); font-style: italic; font-weight: 600; max-width: 700px; margin: 0 auto 24px; line-height: 1.5; color: var(--cream); }
+  .testimonial-author { font-family: 'Syne', sans-serif; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); }
+  .cta-section { text-align: center; padding: 120px 40px; position: relative; overflow: hidden; }
+  .cta-glow { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(201,147,58,0.08) 0%, transparent 70%); pointer-events: none; }
+  footer { padding: 40px; border-top: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+  .footer-copy { font-size: 12px; color: var(--text-muted); letter-spacing: 0.05em; }
+  .footer-links { display: flex; gap: 24px; list-style: none; }
+  .footer-links a { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
   .footer-links a:hover { color: var(--gold-light); }
-
-  /* Gold line separator */
-  .gold-line {
-    width: 40px;
-    height: 1px;
-    background: var(--gold);
-    margin: 0 auto 24px;
-  }
+  .gold-line { width: 40px; height: 1px; background: var(--gold); margin: 0 auto 24px; }
 </style>
 </head>
 <body>
 
-<!-- ── NAV ── -->
 <nav>
   <a href="#" class="nav-logo">
-    <svg class="nav-logo-mark" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="nav-logo-mark" viewBox="0 0 36 36" fill="none">
       <polygon points="18,2 28,8 28,20 18,26 8,20 8,8" fill="none" stroke="url(#ng1)" stroke-width="1.2"/>
       <polygon points="18,6 25,10 25,18 18,22 11,18 11,10" fill="rgba(201,147,58,0.08)" stroke="url(#ng1)" stroke-width="0.8"/>
       <rect x="16.5" y="11" width="3" height="10" rx="1" fill="url(#ng1)"/>
       <rect x="13" y="14.5" width="10" height="3" rx="1" fill="url(#ng1)"/>
-      <defs>
-        <linearGradient id="ng1" x1="8" y1="2" x2="28" y2="26" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#ffe580"/>
-          <stop offset="100%" stop-color="#ffaa20"/>
-        </linearGradient>
-      </defs>
+      <defs><linearGradient id="ng1" x1="8" y1="2" x2="28" y2="26" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ffe580"/><stop offset="100%" stop-color="#ffaa20"/></linearGradient></defs>
     </svg>
     <span class="nav-wordmark">Hive<span>flo</span></span>
   </a>
@@ -632,138 +116,67 @@
   </ul>
 </nav>
 
-<!-- ── HERO ── -->
 <div class="hero">
   <div class="hero-glow"></div>
-
-  <!-- Honeycomb Mark -->
-  <svg class="hero-honeycomb" width="120" height="130" viewBox="0 0 120 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg class="hero-honeycomb" width="120" height="130" viewBox="0 0 120 130" fill="none">
     <polygon points="60,6 82,19 82,45 60,58 38,45 38,19" fill="rgba(255,210,60,0.18)" stroke="url(#hg1)" stroke-width="1.5"/>
-    <polygon points="60,6 82,19 82,45 60,58 38,45 38,19" fill="none" stroke="url(#hg1)" stroke-width="1.5"/>
     <polygon points="18,28 30,21 42,28 42,42 30,49 18,42" fill="rgba(255,210,60,0.08)" stroke="#c97a10" stroke-width="1"/>
     <polygon points="78,28 90,21 102,28 102,42 90,49 78,42" fill="rgba(255,210,60,0.08)" stroke="#c97a10" stroke-width="1"/>
     <polygon points="38,49 50,42 62,49 62,63 50,70 38,63" fill="rgba(255,210,60,0.08)" stroke="#c97a10" stroke-width="1"/>
     <polygon points="58,49 70,42 82,49 82,63 70,70 58,63" fill="rgba(255,210,60,0.08)" stroke="#c97a10" stroke-width="1"/>
     <polygon points="38,6 50,-1 62,6 62,20 50,27 38,20" fill="rgba(255,210,60,0.08)" stroke="#c97a10" stroke-width="1"/>
     <polygon points="58,6 70,-1 82,6 82,20 70,27 58,20" fill="rgba(255,210,60,0.08)" stroke="#c97a10" stroke-width="1"/>
-    <!-- Cross -->
     <rect x="57" y="22" width="6" height="22" rx="2" fill="url(#hg1)"/>
     <rect x="49" y="29" width="22" height="6" rx="2" fill="url(#hg1)"/>
-    <!-- Honey drip -->
     <path d="M60 58 Q62 68 61 76" stroke="url(#hg2)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
     <ellipse cx="60.5" cy="79" rx="4" ry="5" fill="#c9933a" opacity="0.5"/>
     <defs>
-      <linearGradient id="hg1" x1="38" y1="6" x2="82" y2="58" gradientUnits="userSpaceOnUse">
-        <stop offset="0%" stop-color="#ffe580"/>
-        <stop offset="100%" stop-color="#ffaa20"/>
-      </linearGradient>
-      <linearGradient id="hg2" x1="60" y1="58" x2="61" y2="84" gradientUnits="userSpaceOnUse">
-        <stop offset="0%" stop-color="#c9933a"/>
-        <stop offset="100%" stop-color="#c9933a" stop-opacity="0"/>
-      </linearGradient>
+      <linearGradient id="hg1" x1="38" y1="6" x2="82" y2="58" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ffe580"/><stop offset="100%" stop-color="#ffaa20"/></linearGradient>
+      <linearGradient id="hg2" x1="60" y1="58" x2="61" y2="84" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#c9933a"/><stop offset="100%" stop-color="#c9933a" stop-opacity="0"/></linearGradient>
     </defs>
   </svg>
-
   <p class="hero-eyebrow">AI Tools for Real Estate Professionals</p>
-
-  <h1 class="hero-title">
-    Close More.<br>
-    Stress <em>Less.</em>
-  </h1>
-
-  <p class="hero-subtitle">
-    HiveFlo turns a photo of a business card into a full contact entry, a personalized pitch email, and a text message — in seconds.
-  </p>
-
+  <h1 class="hero-title">Close More.<br>Stress <em>Less.</em></h1>
+  <p class="hero-subtitle">HiveFlo turns a photo of a business card into a full contact entry, a personalized pitch email, and a text message — in seconds.</p>
   <div class="hero-buttons">
     <a href="signup.html" class="btn-primary">Get Started Today</a>
     <a href="#demo" class="btn-secondary">See It In Action</a>
   </div>
-
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
-  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div><span>Scroll</span></div>
 </div>
 
-<!-- ── FEATURES ── -->
 <section id="features">
   <p class="section-eyebrow">What HiveFlo Does</p>
   <h2 class="section-title">Everything You Need.<br><em>Nothing You Don't.</em></h2>
   <p class="section-sub">Built specifically for agents and mortgage professionals who are serious about their pipeline.</p>
-
   <div class="features-grid">
     <div class="feature-card">
-      <svg class="feature-icon" viewBox="0 0 48 48" fill="none">
-        <rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/>
-        <rect x="12" y="14" width="24" height="20" rx="3" fill="none" stroke="#c9933a" stroke-width="1.5"/>
-        <line x1="16" y1="20" x2="32" y2="20" stroke="#c9933a" stroke-width="1.2" opacity="0.5"/>
-        <line x1="16" y1="24" x2="28" y2="24" stroke="#c9933a" stroke-width="1.2" opacity="0.5"/>
-        <circle cx="34" cy="32" r="6" fill="rgba(201,147,58,0.2)" stroke="#c9933a" stroke-width="1.2"/>
-        <path d="M32 32 L33.5 33.5 L36 31" stroke="#c9933a" stroke-width="1.2" stroke-linecap="round"/>
-      </svg>
+      <svg class="feature-icon" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/><rect x="12" y="14" width="24" height="20" rx="3" fill="none" stroke="#c9933a" stroke-width="1.5"/><line x1="16" y1="20" x2="32" y2="20" stroke="#c9933a" stroke-width="1.2" opacity="0.5"/><line x1="16" y1="24" x2="28" y2="24" stroke="#c9933a" stroke-width="1.2" opacity="0.5"/><circle cx="34" cy="32" r="6" fill="rgba(201,147,58,0.2)" stroke="#c9933a" stroke-width="1.2"/><path d="M32 32 L33.5 33.5 L36 31" stroke="#c9933a" stroke-width="1.2" stroke-linecap="round"/></svg>
       <div class="feature-title">Card to Contact</div>
       <div class="feature-desc">Snap a photo of any business card. AI instantly extracts the name, phone, email, company, address, and more into a clean editable form.</div>
     </div>
-
     <div class="feature-card">
-      <svg class="feature-icon" viewBox="0 0 48 48" fill="none">
-        <rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/>
-        <rect x="11" y="16" width="26" height="18" rx="3" fill="none" stroke="#c9933a" stroke-width="1.5"/>
-        <path d="M11 20 L24 28 L37 20" stroke="#c9933a" stroke-width="1.2"/>
-        <circle cx="36" cy="14" r="5" fill="#c9933a"/>
-        <path d="M34 14 L35.5 15.5 L38 13" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-      </svg>
+      <svg class="feature-icon" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/><rect x="11" y="16" width="26" height="18" rx="3" fill="none" stroke="#c9933a" stroke-width="1.5"/><path d="M11 20 L24 28 L37 20" stroke="#c9933a" stroke-width="1.2"/><circle cx="36" cy="14" r="5" fill="#c9933a"/><path d="M34 14 L35.5 15.5 L38 13" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
       <div class="feature-title">Instant Email Draft</div>
-      <div class="feature-desc">A personalized pitch email is generated and saved directly to your Gmail drafts — ready to review and send in one tap.</div>
+      <div class="feature-desc">A personalized pitch email is generated and saved directly to your email drafts — ready to review and send in one tap.</div>
     </div>
-
     <div class="feature-card">
-      <svg class="feature-icon" viewBox="0 0 48 48" fill="none">
-        <rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/>
-        <rect x="15" y="10" width="18" height="28" rx="4" fill="none" stroke="#c9933a" stroke-width="1.5"/>
-        <line x1="15" y1="15" x2="33" y2="15" stroke="#c9933a" stroke-width="1" opacity="0.4"/>
-        <line x1="15" y1="33" x2="33" y2="33" stroke="#c9933a" stroke-width="1" opacity="0.4"/>
-        <circle cx="24" cy="36" r="1.5" fill="#c9933a"/>
-        <rect x="19" y="19" width="10" height="1.5" rx="0.75" fill="#c9933a" opacity="0.6"/>
-        <rect x="19" y="22.5" width="8" height="1.5" rx="0.75" fill="#c9933a" opacity="0.4"/>
-      </svg>
+      <svg class="feature-icon" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/><rect x="15" y="10" width="18" height="28" rx="4" fill="none" stroke="#c9933a" stroke-width="1.5"/><line x1="15" y1="15" x2="33" y2="15" stroke="#c9933a" stroke-width="1" opacity="0.4"/><line x1="15" y1="33" x2="33" y2="33" stroke="#c9933a" stroke-width="1" opacity="0.4"/><circle cx="24" cy="36" r="1.5" fill="#c9933a"/><rect x="19" y="19" width="10" height="1.5" rx="0.75" fill="#c9933a" opacity="0.6"/><rect x="19" y="22.5" width="8" height="1.5" rx="0.75" fill="#c9933a" opacity="0.4"/></svg>
       <div class="feature-title">Text & Save to Phone</div>
       <div class="feature-desc">Copy a pre-written text message, and save the contact to your phone — all from one screen, in under 10 seconds.</div>
     </div>
-
     <div class="feature-card">
-      <svg class="feature-icon" viewBox="0 0 48 48" fill="none">
-        <rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/>
-        <rect x="10" y="14" width="28" height="20" rx="3" fill="none" stroke="#c9933a" stroke-width="1.5"/>
-        <line x1="10" y1="20" x2="38" y2="20" stroke="#c9933a" stroke-width="1" opacity="0.4"/>
-        <line x1="16" y1="14" x2="16" y2="34" stroke="#c9933a" stroke-width="1" opacity="0.2"/>
-        <line x1="24" y1="14" x2="24" y2="34" stroke="#c9933a" stroke-width="1" opacity="0.2"/>
-        <line x1="32" y1="14" x2="32" y2="34" stroke="#c9933a" stroke-width="1" opacity="0.2"/>
-      </svg>
+      <svg class="feature-icon" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/><rect x="10" y="14" width="28" height="20" rx="3" fill="none" stroke="#c9933a" stroke-width="1.5"/><line x1="10" y1="20" x2="38" y2="20" stroke="#c9933a" stroke-width="1" opacity="0.4"/><line x1="16" y1="14" x2="16" y2="34" stroke="#c9933a" stroke-width="1" opacity="0.2"/><line x1="24" y1="14" x2="24" y2="34" stroke="#c9933a" stroke-width="1" opacity="0.2"/><line x1="32" y1="14" x2="32" y2="34" stroke="#c9933a" stroke-width="1" opacity="0.2"/></svg>
       <div class="feature-title">Your CRM Hub</div>
       <div class="feature-desc">Every contact flows into HiveFlow's built-in CRM — your central hub. Stay organized, never lose a contact, and connect to your other CRMs so your data feeds everywhere it needs to go.</div>
     </div>
-
     <div class="feature-card">
-      <svg class="feature-icon" viewBox="0 0 48 48" fill="none">
-        <rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/>
-        <circle cx="24" cy="22" r="8" fill="none" stroke="#c9933a" stroke-width="1.5"/>
-        <path d="M20 22 L23 25 L28 19" stroke="#c9933a" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M17 32 Q24 38 31 32" stroke="#c9933a" stroke-width="1.2" stroke-linecap="round" fill="none"/>
-      </svg>
+      <svg class="feature-icon" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/><circle cx="24" cy="22" r="8" fill="none" stroke="#c9933a" stroke-width="1.5"/><path d="M20 22 L23 25 L28 19" stroke="#c9933a" stroke-width="1.5" stroke-linecap="round"/><path d="M17 32 Q24 38 31 32" stroke="#c9933a" stroke-width="1.2" stroke-linecap="round" fill="none"/></svg>
       <div class="feature-title">Works on Mobile</div>
       <div class="feature-desc">Designed mobile-first. Scan a card at a networking event and have everything logged before you walk away.</div>
     </div>
-
     <div class="feature-card">
-      <svg class="feature-icon" viewBox="0 0 48 48" fill="none">
-        <rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/>
-        <polygon points="24,10 30,14 30,22 24,26 18,22 18,14" fill="none" stroke="#c9933a" stroke-width="1.5"/>
-        <rect x="22.5" y="14" width="3" height="8" rx="1" fill="#c9933a"/>
-        <rect x="19.5" y="17" width="9" height="3" rx="1" fill="#c9933a"/>
-        <path d="M24 26 Q25 32 24.5 36" stroke="#c9933a" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
-      </svg>
+      <svg class="feature-icon" viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="12" fill="rgba(201,147,58,0.1)"/><polygon points="24,10 30,14 30,22 24,26 18,22 18,14" fill="none" stroke="#c9933a" stroke-width="1.5"/><rect x="22.5" y="14" width="3" height="8" rx="1" fill="#c9933a"/><rect x="19.5" y="17" width="9" height="3" rx="1" fill="#c9933a"/><path d="M24 26 Q25 32 24.5 36" stroke="#c9933a" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/></svg>
       <div class="feature-title">Faith-Driven</div>
       <div class="feature-desc">Built on the belief that technology should serve people — and that doing business with integrity is the only way to build something that lasts.</div>
     </div>
@@ -772,63 +185,30 @@
 
 <div class="divider"></div>
 
-<!-- ── HOW IT WORKS ── -->
 <section id="how">
   <p class="section-eyebrow">The Process</p>
   <h2 class="section-title">From Card to <em>Connected</em></h2>
   <p class="section-sub">Four steps. Under 30 seconds. Every time.</p>
-
   <div class="steps">
-    <div class="step">
-      <div class="step-line"></div>
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <div class="step-title">Snap or Upload the Card</div>
-        <div class="step-desc">Take a photo of any business card directly in the app, or upload one from your camera roll.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-line"></div>
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <div class="step-title">AI Extracts Everything</div>
-        <div class="step-desc">Name, phone, email, company, address, role — all pulled out automatically and placed into an editable form. Review and adjust anything.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-line"></div>
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <div class="step-title">Outreach is Ready</div>
-        <div class="step-desc">A personalized pitch email lands in your Gmail drafts. A text message is ready to copy. One tap to save the contact to your phone.</div>
-      </div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-content">
-        <div class="step-title">Saved to Your CRM Hub</div>
-        <div class="step-desc">Tap Add to HiveFlow — the contact is saved to your built-in CRM instantly. From there it feeds into your other CRMs automatically. One place. Every tool. Always in sync.</div>
-      </div>
-    </div>
+    <div class="step"><div class="step-line"></div><div class="step-num">1</div><div class="step-content"><div class="step-title">Snap or Upload the Card</div><div class="step-desc">Take a photo of any business card directly in the app, or upload one from your camera roll.</div></div></div>
+    <div class="step"><div class="step-line"></div><div class="step-num">2</div><div class="step-content"><div class="step-title">AI Extracts Everything</div><div class="step-desc">Name, phone, email, company, address, role — all pulled out automatically and placed into an editable form. Review and adjust anything.</div></div></div>
+    <div class="step"><div class="step-line"></div><div class="step-num">3</div><div class="step-content"><div class="step-title">Outreach is Ready</div><div class="step-desc">A personalized pitch email lands in your email drafts. A text message is ready to copy. One tap to save the contact to your phone.</div></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-content"><div class="step-title">Saved to Your CRM Hub</div><div class="step-desc">Tap Add to HiveFlow — the contact is saved to your built-in CRM instantly. From there it feeds into your other CRMs automatically. One place. Every tool. Always in sync.</div></div></div>
   </div>
 </section>
 
 <div class="divider"></div>
 
-<!-- ── TESTIMONIAL ── -->
 <div class="testimonial-section">
   <div class="gold-line"></div>
   <p class="testimonial-quote">"I used to spend 20 minutes after every networking event entering contacts. Now it takes me 30 seconds per card. HiveFlo changed my follow-up game completely."</p>
   <p class="testimonial-author">— Ronald Cepeda, The Mortgage Coach · PMF Inc.</p>
 </div>
 
-
-<!-- ── ANIMATED DEMO ── -->
 <div id="demo" style="background:#0a0a0f;border-top:1px solid rgba(201,147,58,0.08);border-bottom:1px solid rgba(201,147,58,0.08);padding:80px 40px;text-align:center;">
   <p style="font-family:Syne,sans-serif;font-size:14px;letter-spacing:0.4em;text-transform:uppercase;color:#c9933a;margin-bottom:16px;font-weight:700;">See It In Action</p>
   <h2 style="font-family:Cormorant Garamond,serif;font-size:clamp(36px,5vw,56px);font-weight:700;line-height:1.1;margin-bottom:12px;">From Card to <em style="font-style:italic;color:#f0c060;">Connected</em><br>in 30 Seconds</h2>
-  <p style="font-size:15px;color:#e8e2d8;max-width:500px;margin:0 auto 48px;line-height:1.7;">Click through each step below — this is exactly how HiveFlow works.</p>
-
+  <p style="font-size:15px;color:#e8e2d8;max-width:500px;margin:0 auto 48px;line-height:1.7;">Watch HiveFlow turn a business card into a full contact, pitch email, and text — instantly.</p>
   <div style="max-width:320px;margin:0 auto;">
   <style>
     .dp{width:300px;height:620px;background:#0f0f18;border-radius:40px;border:2px solid #1e1e30;box-shadow:0 0 80px rgba(201,147,58,0.15),0 40px 80px rgba(0,0,0,0.5);overflow:hidden;position:relative;margin:0 auto 24px;}
@@ -838,7 +218,6 @@
     .ds.active{opacity:1;pointer-events:all;}
     .dh{font-family:'Syne',sans-serif;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#c9933a;text-align:center;margin-bottom:16px;}
     .dcp{width:100%;height:155px;background:linear-gradient(135deg,#1a1a28,#12122a);border-radius:12px;border:2px dashed #2a2a45;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;position:relative;overflow:hidden;transition:all 0.3s;cursor:pointer;}
-    .dcp:hover{border-color:rgba(201,147,58,0.5);}
     .dcp.hc{border-color:#c9933a;background:linear-gradient(135deg,#1a1400,#0f0c00);}
     .dci{width:85%;height:78%;background:linear-gradient(135deg,#1a1a2e,#0d0d20);border:1px solid #2d2d50;border-radius:8px;position:absolute;display:flex;flex-direction:column;justify-content:center;padding:12px 14px;opacity:0;transform:scale(0.9);transition:all 0.4s ease;}
     .dci.vis{opacity:1;transform:scale(1);}
@@ -846,8 +225,7 @@
     .dcn2{font-size:12px;font-weight:700;color:#e8e4dc;font-family:'Syne',sans-serif;}
     .dct2{font-size:8px;color:#a78bfa;margin-top:1px;}
     .dci2{font-size:7px;color:#666;margin-top:6px;line-height:1.8;}
-    .dxb{width:100%;background:linear-gradient(135deg,#f0c060,#c9933a);color:#08070e;border:none;padding:12px;border-radius:10px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;cursor:pointer;margin-top:auto;transition:opacity 0.2s;}
-    .dxb:hover{opacity:0.85;}
+    .dxb{width:100%;background:linear-gradient(135deg,#f0c060,#c9933a);color:#08070e;border:none;padding:12px;border-radius:10px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.08em;cursor:pointer;margin-top:auto;}
     .dex{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
     .dhx{width:64px;height:64px;animation:dHxR 2s linear infinite;filter:drop-shadow(0 0 16px rgba(201,147,58,0.6));}
     @keyframes dHxR{to{transform:rotate(360deg);}}
@@ -865,7 +243,6 @@
     .dfv.fi{color:#e8e4dc;}
     .dar{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:auto;}
     .dab{padding:8px 3px;border-radius:8px;font-size:9px;font-weight:700;text-align:center;cursor:pointer;line-height:1.4;transition:all 0.15s;}
-    .dab:hover{transform:scale(1.05);}
     .dag{background:rgba(201,147,58,0.15);border:1px solid rgba(201,147,58,0.3);color:#f0c060;}
     .dap{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);color:#a78bfa;}
     .dab2{background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd;}
@@ -884,232 +261,100 @@
     .ddots{display:flex;gap:7px;justify-content:center;margin-bottom:14px;}
     .ddot{width:7px;height:7px;border-radius:50%;background:#1e1e30;cursor:pointer;transition:all 0.3s;}
     .ddot.on{background:#c9933a;width:18px;border-radius:3px;}
-    .drpl{background:transparent;border:1px solid rgba(201,147,58,0.3);color:#c9933a;padding:9px 24px;border-radius:6px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;cursor:pointer;transition:all 0.2s;}
-    .drpl:hover{background:rgba(201,147,58,0.1);}
   </style>
-
-  <div class="dp">
-    <div class="dsc">
-
-      <!-- STEP 1: Upload -->
-      <div class="ds active" id="ds1">
-        <div class="dh">📇 Scan Business Card</div>
-        <div class="dcp" id="dcp" onclick="dCardClick()">
-          <div class="dci" id="dci">
-            <div class="dco2">Keller Williams</div>
-            <div class="dcn2">JESSICA MARTINEZ</div>
-            <div class="dct2">Realtor® · Luxury Specialist</div>
-            <div class="dci2">📞 305.492.7831<br>✉️ jessica@kwmiami.com<br>📍 Coral Gables, FL</div>
-          </div>
-          <span style="font-size:26px;">📸</span>
-          <span style="font-size:11px;color:#444;">Tap to upload card</span>
-        </div>
-        <div style="flex:1;"></div>
-        <button class="dxb" onclick="dExtract()">✦ EXTRACT CARD</button>
-      </div>
-
-      <!-- STEP 2: Extracting -->
-      <div class="ds" id="ds2">
-        <div class="dex">
-          <svg class="dhx" viewBox="0 0 64 64" fill="none">
-            <polygon points="32,4 56,17 56,43 32,56 8,43 8,17" fill="none" stroke="url(#dg1)" stroke-width="1.5"/>
-            <polygon points="32,11 50,21 50,39 32,49 14,39 14,21" fill="rgba(201,147,58,0.1)" stroke="url(#dg1)" stroke-width="1"/>
-            <rect x="29.5" y="23" width="5" height="14" rx="1.5" fill="url(#dg1)"/>
-            <rect x="24" y="27" width="16" height="5" rx="1.5" fill="url(#dg1)"/>
-            <defs><linearGradient id="dg1" x1="8" y1="4" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0c060"/><stop offset="100%" stop-color="#c9933a"/></linearGradient></defs>
-          </svg>
-          <div class="dext">EXTRACTING...</div>
-          <div class="dexs">AI is reading the card<br>and building your contact</div>
-        </div>
-        <div class="dsl"></div>
-      </div>
-
-      <!-- STEP 3: Form -->
-      <div class="ds" id="ds3">
-        <div class="dfh">
-          <div class="dft">Contact Details</div>
-          <div class="dfb">✦ AI Filled</div>
-        </div>
-        <div class="dfg">
-          <div class="dff"><div class="dfl">First Name</div><div class="dfv" id="dv1">Jessica</div></div>
-          <div class="dff"><div class="dfl">Last Name</div><div class="dfv" id="dv2">Martinez</div></div>
-          <div class="dff"><div class="dfl">Phone</div><div class="dfv" id="dv3">305.492.7831</div></div>
-          <div class="dff"><div class="dfl">Email</div><div class="dfv" id="dv4">jessica@kw...</div></div>
-          <div class="dff"><div class="dfl">Role</div><div class="dfv" id="dv5">RE Agent</div></div>
-          <div class="dff"><div class="dfl">Company</div><div class="dfv" id="dv6">Keller Williams</div></div>
-          <div class="dff"><div class="dfl">Date Added</div><div class="dfv" id="dv7">Today</div></div>
-          <div class="dff"><div class="dfl">Location</div><div class="dfv" id="dv8">Coral Gables</div></div>
-        </div>
-        <div class="dar">
-          <div class="dab dag" onclick="dGoStep(4,'email')">✉️<br>Email</div>
-          <div class="dab dap" onclick="dGoStep(4,'text')">💬<br>Text</div>
-          <div class="dab dab2" onclick="dGoStep(4,'contact')">📱<br>Save</div>
-          <div class="dab dg" onclick="dGoStep(4,'success')">➔<br>CRM</div>
-        </div>
-      </div>
-
-      <!-- STEP 4: Results -->
-      <div class="ds" id="ds4">
-        <div class="drt">
-          <div class="drtb on" id="dtb-email" onclick="dTab('email')">✉️ Email</div>
-          <div class="drtb" id="dtb-text" onclick="dTab('text')">💬 Text</div>
-          <div class="drtb" id="dtb-contact" onclick="dTab('contact')">📋 Contact</div>
-        </div>
-        <!-- Email -->
-        <div id="dv-email" class="dep">
-          <div class="des">Nice meeting you today!</div>
-          <div class="deb" id="demailbody"></div>
-        </div>
-        <!-- Text -->
-        <div id="dv-text" style="display:none;flex:1;flex-direction:column;gap:8px;">
-          <div style="background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:9px 12px;font-size:10px;color:#a78bfa;">To: Jessica Martinez · 305.492.7831</div>
-          <div style="background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:12px;flex:1;display:flex;gap:8px;align-items:flex-start;">
-            <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#f0c060,#c9933a);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;font-weight:700;">R</div>
-            <div style="background:#2d1060;border-radius:4px 12px 12px 12px;padding:9px 11px;font-size:10px;color:#e8e4dc;line-height:1.7;word-break:break-word;" id="dtextbody"></div>
-          </div>
-        </div>
-        <!-- Contact -->
-        <div id="dv-contact" style="display:none;flex:1;">
-          <div style="background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:13px;display:flex;flex-direction:column;gap:7px;">
-            <div style="font-size:14px;font-weight:700;color:#f0c060;font-family:Syne,sans-serif;">Jessica Martinez</div>
-            <div style="font-size:10px;color:#a78bfa;">Keller Williams · RE Agent</div>
-            <div style="font-size:10px;color:#888;">📞 305.492.7831</div>
-            <div style="font-size:10px;color:#888;">✉️ jessica@kwmiami.com</div>
-            <div style="font-size:10px;color:#888;">📍 Coral Gables, FL</div>
-            <div style="background:rgba(201,147,58,0.1);border:1px solid rgba(201,147,58,0.2);border-radius:7px;padding:7px;font-size:10px;color:#c9933a;text-align:center;">✦ Ready to save to phone</div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">
-          <div class="dab dag" style="padding:9px;" onclick="dGoStep(3,null)">← Back</div>
-          <div class="dab dg" style="padding:9px;" onclick="dShowSuccess()">✓ Done</div>
-        </div>
-      </div>
-
-      <!-- SUCCESS overlay -->
-      <div class="dov" id="dsuc">
-        <div class="doi">🐝</div>
-        <div class="dot2">All Done!</div>
-        <div class="dosi">
-          📱 Contact saved to phone<br>
-          ✉️ Email drafted in Gmail<br>
-          💬 Text message ready<br>
-          🐝 Added to HiveFlow CRM
-        </div>
-      </div>
-
+  <div class="dp"><div class="dsc">
+    <div class="ds active" id="ds1">
+      <div class="dh">📇 Scan Business Card</div>
+      <div class="dcp" id="dcp"><div class="dci" id="dci"><div class="dco2">Sunrise Realty Group</div><div class="dcn2">SARAH DELGADO</div><div class="dct2">Realtor® · Luxury Specialist</div><div class="dci2">📞 786-555-0194<br>✉️ sarah@sunriserealty.com<br>📍 Coral Gables, FL</div></div><span style="font-size:26px;">📸</span><span style="font-size:11px;color:#444;">Tap to upload card</span></div>
+      <div style="flex:1;"></div>
+      <button class="dxb" onclick="dExtract()">✦ EXTRACT CARD</button>
     </div>
-  </div>
-
+    <div class="ds" id="ds2">
+      <div class="dex">
+        <svg class="dhx" viewBox="0 0 64 64" fill="none"><polygon points="32,4 56,17 56,43 32,56 8,43 8,17" fill="none" stroke="url(#dg1)" stroke-width="1.5"/><polygon points="32,11 50,21 50,39 32,49 14,39 14,21" fill="rgba(201,147,58,0.1)" stroke="url(#dg1)" stroke-width="1"/><rect x="29.5" y="23" width="5" height="14" rx="1.5" fill="url(#dg1)"/><rect x="24" y="27" width="16" height="5" rx="1.5" fill="url(#dg1)"/><defs><linearGradient id="dg1" x1="8" y1="4" x2="56" y2="56" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#f0c060"/><stop offset="100%" stop-color="#c9933a"/></linearGradient></defs></svg>
+        <div class="dext">EXTRACTING...</div><div class="dexs">AI is reading the card<br>and building your contact</div>
+      </div>
+      <div class="dsl"></div>
+    </div>
+    <div class="ds" id="ds3">
+      <div class="dfh"><div class="dft">Contact Details</div><div class="dfb">✦ AI Filled</div></div>
+      <div class="dfg">
+        <div class="dff"><div class="dfl">First Name</div><div class="dfv" id="dv1">Sarah</div></div>
+        <div class="dff"><div class="dfl">Last Name</div><div class="dfv" id="dv2">Delgado</div></div>
+        <div class="dff"><div class="dfl">Phone</div><div class="dfv" id="dv3">786-555-0194</div></div>
+        <div class="dff"><div class="dfl">Email</div><div class="dfv" id="dv4">sarah@sunrise...</div></div>
+        <div class="dff"><div class="dfl">Role</div><div class="dfv" id="dv5">RE Agent</div></div>
+        <div class="dff"><div class="dfl">Company</div><div class="dfv" id="dv6">Sunrise Realty</div></div>
+        <div class="dff"><div class="dfl">Date Added</div><div class="dfv" id="dv7">Today</div></div>
+        <div class="dff"><div class="dfl">Location</div><div class="dfv" id="dv8">Coral Gables</div></div>
+      </div>
+      <div class="dar">
+        <div class="dab dag" onclick="dGoStep(4,'email')">✉️<br>Email</div>
+        <div class="dab dap" onclick="dGoStep(4,'text')">💬<br>Text</div>
+        <div class="dab dab2" onclick="dGoStep(4,'contact')">📱<br>Save</div>
+        <div class="dab dg" onclick="dGoStep(4,'success')">➔<br>CRM</div>
+      </div>
+    </div>
+    <div class="ds" id="ds4">
+      <div class="drt">
+        <div class="drtb on" id="dtb-email" onclick="dTab('email')">✉️ Email</div>
+        <div class="drtb" id="dtb-text" onclick="dTab('text')">💬 Text</div>
+        <div class="drtb" id="dtb-contact" onclick="dTab('contact')">📋 Contact</div>
+      </div>
+      <div id="dv-email" class="dep"><div class="des">Nice meeting you today!</div><div class="deb" id="demailbody"></div></div>
+      <div id="dv-text" style="display:none;flex:1;flex-direction:column;gap:8px;">
+        <div style="background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:9px 12px;font-size:10px;color:#a78bfa;">To: Sarah Delgado · 786-555-0194</div>
+        <div style="background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:12px;flex:1;display:flex;gap:8px;align-items:flex-start;">
+          <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#f0c060,#c9933a);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;font-weight:700;">R</div>
+          <div style="background:#2d1060;border-radius:4px 12px 12px 12px;padding:9px 11px;font-size:10px;color:#e8e4dc;line-height:1.7;word-break:break-word;" id="dtextbody"></div>
+        </div>
+      </div>
+      <div id="dv-contact" style="display:none;flex:1;">
+        <div style="background:#13131a;border:1px solid #1e1e30;border-radius:9px;padding:13px;display:flex;flex-direction:column;gap:7px;">
+          <div style="font-size:14px;font-weight:700;color:#f0c060;font-family:Syne,sans-serif;">Sarah Delgado</div>
+          <div style="font-size:10px;color:#a78bfa;">Sunrise Realty Group · RE Agent</div>
+          <div style="font-size:10px;color:#888;">📞 786-555-0194</div>
+          <div style="font-size:10px;color:#888;">✉️ sarah@sunriserealty.com</div>
+          <div style="font-size:10px;color:#888;">📍 Coral Gables, FL</div>
+          <div style="background:rgba(201,147,58,0.1);border:1px solid rgba(201,147,58,0.2);border-radius:7px;padding:7px;font-size:10px;color:#c9933a;text-align:center;">✦ Ready to save to phone</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px;">
+        <div class="dab dag" style="padding:9px;" onclick="dGoStep(3,null)">← Back</div>
+        <div class="dab dg" style="padding:9px;" onclick="dShowSuccess()">✓ Done</div>
+      </div>
+    </div>
+    <div class="dov" id="dsuc"><div class="doi">🐝</div><div class="dot2">All Done!</div><div class="dosi">📱 Contact saved to phone<br>✉️ Email drafted<br>💬 Text message ready<br>🐝 Added to HiveFlow CRM</div></div>
+  </div></div>
   <div class="ddots">
     <div class="ddot on" onclick="dGoStep(1,null)"></div>
     <div class="ddot" onclick="dGoStep(2,null)"></div>
     <div class="ddot" onclick="dGoStep(3,null)"></div>
     <div class="ddot" onclick="dGoStep(4,null)"></div>
   </div>
-  <button class="drpl" onclick="dReset()">↺ REPLAY</button>
-
   <script>
-  const dEmail = `Hi Jessica,
-
-It was so great meeting you today at the event!
-
-I'd love to connect and explore how we can work together for your clients.
-
-Ronald Cepeda
-The Mortgage Coach
-📞 305-785-3915`;
-  const dText = `Hey Jessica! Great meeting you today 😊 Would love to connect and see how we can collaborate. Feel free to reach out! — Ronald 📞 305-785-3915`;
-  let dAuto=[];
-
-  function dClear(){dAuto.forEach(t=>clearTimeout(t));dAuto=[];}
-  function dT(fn,ms){dAuto.push(setTimeout(fn,ms));}
-
-  function dSetStep(n){
-    document.querySelectorAll('.ds').forEach((s,i)=>s.classList.toggle('active',i+1===n));
-    document.querySelectorAll('.ddot').forEach((d,i)=>d.classList.toggle('on',i+1===n));
-  }
-
-  function dGoStep(n, tab){
-    dClear();
-    if(n===3){
-      document.getElementById('dsuc').classList.remove('show');
-    }
-    dSetStep(n);
-    if(tab) dTab(tab);
-  }
-
-  function dTab(tab){
-    ['email','text','contact'].forEach(t=>{
-      const v=document.getElementById('dv-'+t);
-      const b=document.getElementById('dtb-'+t);
-      if(v) v.style.display=t===tab?(t==='email'?'block':'flex'):'none';
-      if(b) b.classList.toggle('on',t===tab);
-    });
-    if(tab==='email' && !document.getElementById('demailbody').innerText){
-      let i=0;const el=document.getElementById('demailbody');
-      const iv=setInterval(()=>{if(i<dEmail.length){el.innerText+=dEmail[i];i++;}else clearInterval(iv);},18);
-    }
-    if(tab==='text' && !document.getElementById('dtextbody').innerText){
-      let i=0;const el=document.getElementById('dtextbody');
-      const iv=setInterval(()=>{if(i<dText.length){el.innerText+=dText[i];i++;}else clearInterval(iv);},20);
-    }
-  }
-
-  function dCardClick(){
-    document.getElementById('dcp').classList.add('hc');
-    document.getElementById('dci').classList.add('vis');
-  }
-
-  function dExtract(){
-    dClear();
-    dSetStep(2);
-    dT(()=>{
-      dSetStep(3);
-      ['dv1','dv2','dv3','dv4','dv5','dv6','dv7','dv8'].forEach((id,i)=>{
-        dT(()=>document.getElementById(id).classList.add('fi'),i*120);
-      });
-    },2000);
-  }
-
-  function dShowSuccess(){
-    document.getElementById('dsuc').classList.add('show');
-    dT(()=>{
-      document.getElementById('dsuc').classList.remove('show');
-      dReset();
-    },3000);
-  }
-
-  function dReset(){
-    dClear();
-    document.getElementById('dcp').classList.remove('hc');
-    document.getElementById('dci').classList.remove('vis');
-    document.getElementById('dsuc').classList.remove('show');
-    document.getElementById('demailbody').innerText='';
-    document.getElementById('dtextbody').innerText='';
-    document.querySelectorAll('.dfv').forEach(f=>f.classList.remove('fi'));
-    dSetStep(1);
-    // Auto demo
-    dT(dCardClick, 1000);
-    dT(dExtract, 2500);
-    dT(()=>{dGoStep(4,'email');},5500);
-    dT(()=>dTab('text'),9000);
-    dT(()=>dTab('contact'),12000);
-    dT(dShowSuccess,14500);
-  }
-  dReset();
+  const dEmail=`Hi Sarah,\n\nGreat meeting you today!\n\nI'd love to connect and help your clients get financed fast.\n\nMike Torres\nMortgage Advisor\n📞 786-555-0142`;
+  const dText=`Hey Sarah! Great meeting you today. Let's connect soon! — Mike 📞 786-555-0142`;
+  let dT=[];
+  function dK(){dT.forEach(t=>{clearTimeout(t);clearInterval(t);});dT=[];}
+  function dA(fn,ms){dT.push(setTimeout(fn,ms));}
+  function dS(n){document.querySelectorAll('.ds').forEach((s,i)=>s.classList.toggle('active',i+1===n));document.querySelectorAll('.ddot').forEach((d,i)=>d.classList.toggle('on',i+1===n));}
+  function dTab(t){['email','text','contact'].forEach(x=>{const v=document.getElementById('dv-'+x);const b=document.getElementById('dtb-'+x);if(v)v.style.display=x===t?(x==='email'?'block':'flex'):'none';if(b)b.classList.toggle('on',x===t);});if(t==='email'){const el=document.getElementById('demailbody');el.innerText='';let i=0;const iv=setInterval(()=>{if(i<dEmail.length){el.innerText+=dEmail[i];i++;}else clearInterval(iv);},18);dT.push(iv);}if(t==='text'){const el=document.getElementById('dtextbody');el.innerText='';let i=0;const iv=setInterval(()=>{if(i<dText.length){el.innerText+=dText[i];i++;}else clearInterval(iv);},20);dT.push(iv);}}
+  function dGoStep(n,t){dK();document.getElementById('dsuc').classList.remove('show');dS(n);if(t)dTab(t);if(n===1)dLoop();if(n===2){dA(()=>{dS(3);dF();},2000);}if(n===3){dA(()=>{dS(4);dTab('email');},3000);dA(()=>dTab('text'),6500);dA(()=>dTab('contact'),9500);dA(dDone,11500);}if(n===4){dA(()=>dTab('text'),3500);dA(()=>dTab('contact'),6500);dA(dDone,8500);}}
+  function dF(){['dv1','dv2','dv3','dv4','dv5','dv6','dv7','dv8'].forEach((id,i)=>{dA(()=>document.getElementById(id).classList.add('fi'),i*120);});}
+  function dShowSuccess(){document.getElementById('dsuc').classList.add('show');dA(()=>{document.getElementById('dsuc').classList.remove('show');dA(()=>dLoop(),600);},2500);}
+  function dDone(){dShowSuccess();}
+  function dLoop(){dK();document.getElementById('dcp').classList.remove('hc');document.getElementById('dci').classList.remove('vis');document.getElementById('dsuc').classList.remove('show');document.querySelectorAll('.dfv').forEach(f=>f.classList.remove('fi'));dS(1);dA(()=>{document.getElementById('dcp').classList.add('hc');document.getElementById('dci').classList.add('vis');},1000);dA(()=>dS(2),2500);dA(()=>{dS(3);dF();},4500);dA(()=>{dS(4);dTab('email');},7500);dA(()=>dTab('text'),11000);dA(()=>dTab('contact'),14000);dA(dDone,16500);}
+  dLoop();
   </script>
   </div>
 </div>
 
-<!-- ── PRICING ── -->
 <section id="pricing">
   <p class="section-eyebrow">Simple Pricing</p>
   <h2 class="section-title">One Plan.<br><em>Everything Included.</em></h2>
   <p class="section-sub">Two simple plans. No hidden fees. Less than a cup of coffee a day.</p>
-
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:820px;margin:0 auto;">
-
-    <!-- STARTER -->
     <div class="pricing-card">
       <div class="pricing-badge">Starter · Solo</div>
       <div class="pricing-price"><sup>$</sup>15</div>
@@ -1126,8 +371,6 @@ The Mortgage Coach
       </ul>
       <a href="signup.html" class="btn-primary" style="display:block;text-align:center">Get Started →</a>
     </div>
-
-    <!-- HIVE MIND -->
     <div class="pricing-card" style="border-color:rgba(201,147,58,0.5);background:linear-gradient(135deg,#0f0d1a,#1a1400);">
       <div class="pricing-badge" style="background:rgba(201,147,58,0.25);">🐝 Hive Mind · Teams</div>
       <div class="pricing-price"><sup>$</sup>30</div>
@@ -1146,11 +389,9 @@ The Mortgage Coach
       </ul>
       <a href="signup.html" class="btn-primary" style="display:block;text-align:center;">Join the Hive →</a>
     </div>
-
   </div>
 </section>
 
-<!-- ── CTA ── -->
 <div class="cta-section" id="signup">
   <div class="cta-glow"></div>
   <p class="section-eyebrow">Join HiveFlo</p>
@@ -1160,7 +401,6 @@ The Mortgage Coach
   <p style="font-size:12px;color:#4a4060;text-align:center;letter-spacing:0.05em;margin-top:16px;">Cancel anytime · Secure payments by Stripe</p>
 </div>
 
-<!-- ── FOOTER ── -->
 <footer>
   <div class="footer-copy">© 2026 HiveFlo · hiveflo.app · Built with faith 🙏</div>
   <ul class="footer-links">
@@ -1171,26 +411,11 @@ The Mortgage Coach
 </footer>
 
 <script>
-function handleSignup(e) {
-  e.preventDefault();
-  document.getElementById('signup-status').innerText = '✦ You\'re on the list! We\'ll be in touch shortly.';
-  e.target.reset();
-}
-
-// Fade in on scroll
 const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.opacity = '1';
-      entry.target.style.transform = 'translateY(0)';
-    }
-  });
+  entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.opacity='1'; entry.target.style.transform='translateY(0)'; } });
 }, { threshold: 0.1 });
-
 document.querySelectorAll('.feature-card, .step, .pricing-card').forEach(el => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(20px)';
-  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  el.style.opacity='0'; el.style.transform='translateY(20px)'; el.style.transition='opacity 0.6s ease, transform 0.6s ease';
   observer.observe(el);
 });
 </script>
