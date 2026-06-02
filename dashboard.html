@@ -1030,12 +1030,7 @@ function copyRef(){
   });
 }
 function refText(){const l=encodeURIComponent(document.getElementById("refLink").value);window.open("sms:?body=Hey! I use HiveFlow for managing contacts and networking — its incredible. Sign up with my link and we both get a free month! "+l,"_blank");}
-function refEmail(){const l=document.getElementById("refLink").value,s=encodeURIComponent("You need to try HiveFlow"),b=encodeURIComponent("Hey!
-
-I have been using HiveFlow for my business and it is a game changer. Sign up with my link and we both get a free month:
-"+l+"
-
-Ronald");window.open("https://mail.google.com/mail/?view=cm&su="+s+"&body="+b,"_blank");}
+function refEmail(){var l=document.getElementById("refLink").value;var s=encodeURIComponent("You need to try HiveFlow");var body="Hey! I have been using HiveFlow and it is a game changer. Sign up with my link and we both get a free month: "+l+" - Ronald";window.open("https://mail.google.com/mail/?view=cm&su="+s+"&body="+encodeURIComponent(body),"_blank");}
 function refWA(){const l=encodeURIComponent("Hey! You need to try HiveFlow — scans business cards, writes emails and texts, organizes contacts. Sign up with my link and we both get a free month! "+document.getElementById("refLink").value);window.open("https://wa.me/?text="+l,"_blank");}
 function showQR(){
   const link=document.getElementById("refLink").value;
