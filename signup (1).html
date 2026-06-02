@@ -8,11 +8,7 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{
-  --gold:#c9a84c;--gold-light:#f0c060;--gold-dim:rgba(201,168,76,0.15);--gold-border:rgba(201,168,76,0.3);
-  --bg:#080810;--surface:#0f0f1c;--surface2:#141426;--border:#1e1e35;
-  --text:#ffffff;--text-dim:#f0ede8;--text-muted:#8890a8;
-}
+:root{--gold:#c9a84c;--gold-light:#f0c060;--gold-dim:rgba(201,168,76,0.15);--gold-border:rgba(201,168,76,0.3);--bg:#080810;--surface:#0f0f1c;--surface2:#141426;--border:#1e1e35;--text:#ffffff;--text-dim:#f0ede8;--text-muted:#8890a8;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -5%,rgba(201,168,76,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;}
@@ -201,7 +197,7 @@ async function handleLogin(){
     setTimeout(function(){window.location.href='dashboard.html';},2000);
   }catch(err){showAlert(err.message||'Invalid email or password.');setLoading('loginBtn',false);}
 }
-async function handleForgot(){var email=document.getElementById('login-email').value.trim();if(!email){showAlert('Enter your email address above first.');return;}const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password.html'});if(error)showAlert(error.message);else showAlert('Password reset email sent!','success');}
+async function handleForgot(){var email=document.getElementById('login-email').value.trim();if(!email){showAlert('Enter your email above first.');return;}const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password.html'});if(error)showAlert(error.message);else showAlert('Password reset email sent!','success');}
 if(new URLSearchParams(window.location.search).get('canceled'))showAlert('Payment was canceled. Choose a plan to continue.');
 function showAlert(msg,type){var el=document.getElementById('alert');el.textContent=msg;el.className='alert '+(type||'error')+' show';}
 function hideAlert(){document.getElementById('alert').className='alert';}
