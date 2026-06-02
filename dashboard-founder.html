@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HiveFlow Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+[data-theme="dark"]{--gold:#c9a84c;--gold-light:#f0c060;--gold-dim:rgba(201,168,76,0.15);--gold-border:rgba(201,168,76,0.3);--bg:#080810;--surface:#0f0f1c;--surface2:#141426;--border:#1e1e35;--text:#ffffff;--text-dim:#f0ede8;--text-muted:#d0ccc8;--sidebar:#0a0a14;--shadow:0 20px 60px rgba(0,0,0,0.5);}
+[data-theme="light"]{--gold:#b8860b;--gold-light:#c9933a;--gold-dim:rgba(184,134,11,0.1);--gold-border:rgba(184,134,11,0.3);--bg:#f8f5f0;--surface:#ffffff;--surface2:#f2ede6;--border:#e0d8cc;--text:#0a0806;--text-dim:#2a1f14;--text-muted:#5a4e3e;--sidebar:#ffffff;--shadow:0 4px 24px rgba(0,0,0,0.08);}
+*{margin:0;padding:0;box-sizing:border-box;}html,body{height:100%;overflow-x:hidden;}
+body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;font-size:15px;min-height:100vh;transition:background 0.3s,color 0.3s;}
+body::before{content:"";position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -5%,rgba(201,168,76,0.06) 0%,transparent 70%);pointer-events:none;z-index:0;}
+body::after{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52' viewBox='0 0 60 52'%3E%3Cpolygon points='30,1 59,16 59,46 30,61 1,46 1,16' fill='none' stroke='rgba(184,134,11,0.04)' stroke-width='1'/%3E%3C/svg%3E");background-size:60px 52px;pointer-events:none;z-index:0;}
+.layout{display:flex;min-height:100vh;position:relative;z-index:1;}
+/* SIDEBAR */
+.sidebar{width:220px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:50;transition:all 0.3s;}
+.s-logo{padding:22px 20px;border-bottom:1px solid var(--border);}
+.lw{font-family:"Cormorant Garamond",serif;font-size:24px;font-weight:600;}.lh{color:var(--gold);}.lf{color:var(--text);font-style:italic;}
+.ltag{font-size:10px;color:var(--text-muted);letter-spacing:0.12em;text-transform:uppercase;margin-top:2px;}
+.nav{flex:1;padding:14px 10px;}
+.ni{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text-dim);margin-bottom:2px;border:none;background:transparent;width:100%;text-align:left;transition:all 0.2s;}
+.ni:hover{background:var(--gold-dim);color:var(--text);}
+.ni.active{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border);}
+.ni svg{width:16px;height:16px;flex-shrink:0;}
+.ns{font-size:9px;font-weight:700;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;padding:14px 12px 5px;}
+.s-bottom{padding:14px 10px;border-top:1px solid var(--border);}
+.ucard{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.uemail{font-size:11px;color:var(--text-dim);margin-bottom:5px;}
+.uplan{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);padding:2px 8px;border-radius:4px;}
+.uprof{font-size:11px;color:var(--text-muted);margin-top:3px;}
+.tbtn{width:100%;margin-top:7px;padding:7px;background:transparent;border:1px solid var(--border);color:var(--text-muted);border-radius:7px;font-family:"DM Sans",sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;}
+.tbtn:hover{border-color:var(--gold-border);color:var(--gold);}
+.lbtn{width:100%;margin-top:5px;padding:7px;background:transparent;border:1px solid var(--border);color:var(--text-muted);border-radius:7px;font-family:"DM Sans",sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s;}
+.lbtn:hover{border-color:#ef4444;color:#ef4444;}
+/* MAIN */
+.main{margin-left:220px;flex:1;padding:26px;max-width:920px;}
+.topbar{display:none;background:var(--sidebar);border-bottom:1px solid var(--border);padding:13px 16px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:40;}
+.tl{font-family:"Cormorant Garamond",serif;font-size:20px;font-weight:600;}
+.tr{display:flex;align-items:center;gap:8px;}
+.icnbtn{background:transparent;border:none;color:var(--text);cursor:pointer;padding:4px;}
+.ttheme{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);border-radius:20px;padding:5px 10px;font-size:12px;cursor:pointer;}
+/* STATS */
+.sr{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:26px;}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;position:relative;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:border-color 0.2s;}
+.sc:hover{border-color:var(--gold-border);}
+.sc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0.5;}
+.sn{font-family:"Cormorant Garamond",serif;font-size:34px;font-weight:600;color:var(--gold-light);line-height:1;}
+.sl{font-size:11px;color:var(--text-muted);margin-top:3px;letter-spacing:0.05em;text-transform:uppercase;font-weight:600;}
+.ss{font-size:11px;color:var(--text-dim);margin-top:5px;}
+.tbar{width:100%;height:4px;background:var(--border);border-radius:2px;margin-top:7px;overflow:hidden;}
+.tfill{height:100%;background:linear-gradient(90deg,var(--gold-light),var(--gold));border-radius:2px;transition:width 0.8s ease;}
+.tlbl{font-size:10px;color:var(--gold);font-weight:600;margin-top:3px;}
+/* WELCOME */
+.wlc{margin-bottom:26px;}
+.wlc h1{font-family:"Cormorant Garamond",serif;font-size:30px;font-weight:600;line-height:1.2;margin-bottom:5px;}
+.wlc h1 em{color:var(--gold);font-style:italic;}
+.wlc p{font-size:14px;color:var(--text-dim);}
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:22px;box-shadow:var(--shadow);}
+.ch{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.ct{font-family:"Syne",sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);}
+.cbdg{font-size:10px;color:var(--text-muted);border:1px solid var(--border);padding:3px 10px;border-radius:4px;}
+.cbtns{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+/* UPLOAD */
+.uz{margin:22px;border:2px dashed var(--border);border-radius:13px;padding:36px 16px;text-align:center;cursor:pointer;transition:all 0.3s;}
+.uz:hover,.uz.drag{border-color:var(--gold-border);background:var(--gold-dim);}
+.ui{font-size:38px;margin-bottom:10px;}
+.ut{font-family:"Syne",sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.usub{font-size:13px;color:var(--text-muted);}
+.exs{padding:0 22px 22px;}
+.bex{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#fff;border:none;border-radius:10px;font-family:"Syne",sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;cursor:pointer;transition:all 0.2s;}
+.bex:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,168,76,0.3);}
+/* RESULTS */
+.res{padding:0 22px 22px;}
+.rtabs{display:flex;gap:5px;margin-bottom:14px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:4px;}
+.rtab{flex:1;padding:7px 5px;border-radius:7px;border:none;background:transparent;color:var(--text-dim);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.2s;text-align:center;}
+.rtab.on{background:var(--gold);color:#fff;font-weight:700;}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px;}
+.fg{display:flex;flex-direction:column;}.fg.full{grid-column:span 2;}
+.fl{font-size:10px;font-weight:600;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:3px;}
+.fi{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:"DM Sans",sans-serif;font-size:13px;outline:none;transition:all 0.2s;}
+.fi:focus{border-color:var(--gold-border);}
+textarea.fi{resize:vertical;}
+select.fi{-webkit-appearance:none;}
+.ar{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.btn{padding:11px;border:none;border-radius:9px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.btng{background:var(--gold);color:#fff;}.btng:hover{background:var(--gold-light);}
+.btno{background:transparent;border:1px solid var(--border);color:var(--text-dim);}.btno:hover{border-color:var(--gold-border);color:var(--text);}
+.full{grid-column:span 2;}
+.pbx{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:12px;font-size:13px;line-height:1.7;color:var(--text-dim);white-space:pre-wrap;max-height:190px;overflow-y:auto;}
+.psub{font-weight:700;color:var(--gold);margin-bottom:7px;font-size:13px;}
+/* CONTACTS */
+.crow{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:13px 16px;margin-bottom:9px;display:flex;align-items:center;gap:13px;transition:all 0.2s;cursor:pointer;}
+.crow:hover{border-color:var(--gold-border);transform:translateX(3px);}
+.cav{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold-light),var(--gold));display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",serif;font-size:17px;font-weight:600;color:#fff;flex-shrink:0;}
+.cn{font-weight:600;font-size:14px;color:var(--text);margin-bottom:1px;}
+.cm{font-size:12px;color:var(--text-muted);}
+.cd{font-size:11px;color:var(--text-muted);margin-left:auto;flex-shrink:0;}
+/* DRAWER */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:100;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.ov.show{opacity:1;pointer-events:all;}
+.drw{position:fixed;top:0;right:-420px;width:380px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:101;display:flex;flex-direction:column;transition:right 0.3s ease;overflow-y:auto;}
+.drw.show{right:0;}
+.dh{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.dav{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--gold-light),var(--gold));display:flex;align-items:center;justify-content:center;font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:600;color:#fff;flex-shrink:0;}
+.dn{font-family:"Cormorant Garamond",serif;font-size:19px;font-weight:600;color:var(--text);}
+.dt{font-size:12px;color:var(--text-muted);margin-top:1px;}
+.dc{margin-left:auto;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:20px;line-height:1;padding:2px;}
+.dact{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:18px;}
+.dab{display:flex;flex-direction:column;align-items:center;gap:5px;padding:13px 8px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;transition:all 0.2s;text-decoration:none;color:var(--text-dim);font-size:12px;font-weight:600;font-family:"DM Sans",sans-serif;}
+.dab:hover{border-color:var(--gold-border);color:var(--gold);background:var(--gold-dim);}
+.dab span{font-size:20px;}
+.dab.gcall:hover{border-color:#22c55e;color:#22c55e;background:rgba(34,197,94,0.08);}
+.dab.gtext:hover{border-color:#a78bfa;color:#a78bfa;background:rgba(167,139,250,0.08);}
+.dsec{padding:0 18px 14px;}
+.dsect{font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;padding-top:14px;border-top:1px solid var(--border);}
+.drow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);}
+.drow:last-child{border-bottom:none;}
+.drl{font-size:12px;color:var(--text-muted);font-weight:600;}
+.drv{font-size:13px;color:var(--text);text-align:right;}
+.dnta{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-family:"DM Sans",sans-serif;font-size:13px;outline:none;resize:vertical;min-height:70px;margin-top:7px;}
+.dsavebtn{margin:14px 18px;width:calc(100% - 36px);padding:12px;background:var(--gold);color:#fff;border:none;border-radius:9px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
+/* BEE */
+.wbp{position:fixed;bottom:90px;right:24px;width:320px;height:480px;background:var(--surface);border:1px solid var(--border);border-radius:20px;z-index:199;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,0.4);opacity:0;pointer-events:none;transform:translateY(20px);transition:all 0.3s;}
+.wbp.show{opacity:1;pointer-events:all;transform:translateY(0);}
+.wbh{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;border-radius:20px 20px 0 0;}
+.wbav{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold-light),var(--gold));display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.wbtl{font-family:"Syne",sans-serif;font-size:13px;font-weight:700;color:var(--text);}
+.wbst{font-size:10px;color:var(--text-muted);}
+.wbcl{margin-left:auto;background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:17px;}
+.wbm{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:9px;}
+.msg{max-width:86%;padding:9px 13px;border-radius:13px;font-size:13px;line-height:1.5;white-space:pre-line;}
+.bot{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:4px 13px 13px 13px;align-self:flex-start;}
+.usr{background:var(--gold);color:#fff;border-radius:13px 4px 13px 13px;align-self:flex-end;}
+.typ{display:flex;gap:3px;align-items:center;padding:9px 13px;background:var(--surface2);border:1px solid var(--border);border-radius:4px 13px 13px 13px;width:fit-content;}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--text-muted);animation:bd 1.2s ease-in-out infinite;}
+.dot:nth-child(2){animation-delay:0.2s;}.dot:nth-child(3){animation-delay:0.4s;}
+@keyframes bd{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-5px);}}
+.wbsg{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 7px;}
+.wbs{background:var(--surface2);border:1px solid var(--gold-border);color:var(--gold);border-radius:20px;padding:4px 11px;font-size:11px;cursor:pointer;transition:all 0.2s;font-family:"DM Sans",sans-serif;}
+.wbs:hover{background:var(--gold-dim);}
+.wbir{padding:10px;border-top:1px solid var(--border);display:flex;gap:7px;border-radius:0 0 20px 20px;}
+.wbin{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:8px 13px;color:var(--text);font-family:"DM Sans",sans-serif;font-size:13px;outline:none;}
+.wbin:focus{border-color:var(--gold-border);}
+.wbsnd{width:34px;height:34px;border-radius:50%;background:var(--gold);border:none;color:#fff;cursor:pointer;font-size:13px;flex-shrink:0;transition:all 0.2s;}
+/* ACHIEVEMENTS */
+.urow{display:flex;align-items:center;gap:13px;padding:13px 18px;border-bottom:1px solid var(--border);transition:background 0.2s;}
+.urow:last-child{border-bottom:none;}
+.urow.ulkd{background:rgba(201,168,76,0.04);}
+.urow.lkd{opacity:0.45;}
+.uic{font-size:24px;flex-shrink:0;width:38px;text-align:center;}
+.unm{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.uds{font-size:12px;color:var(--text-muted);}
+.ubdg{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;flex-shrink:0;}
+.bon{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#4ade80;}
+.boff{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);}
+/* SETTINGS */
+.ssec{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:14px;box-shadow:var(--shadow);}
+.stl{font-family:"Syne",sans-serif;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.srow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;}
+.srow:last-child{border-bottom:none;padding-bottom:0;}
+.slbl{font-size:14px;color:var(--text);font-weight:500;}
+.sval{font-size:13px;color:var(--text-dim);}
+/* REFER */
+.rstat{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px;}
+/* MILESTONE POPUP */
+.mpop{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:600;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s;}
+.mpop.show{opacity:1;pointer-events:all;}
+.mcard{background:var(--surface);border:2px solid var(--gold);border-radius:22px;padding:38px 32px;text-align:center;max-width:320px;width:90%;box-shadow:0 0 80px rgba(201,168,76,0.4);animation:mpop 0.5s cubic-bezier(0.175,0.885,0.32,1.275);}
+@keyframes mpop{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+.mic{font-size:58px;margin-bottom:10px;display:block;}
+.mlbl{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:0.2em;text-transform:uppercase;margin-bottom:7px;}
+.mtl{font-family:"Cormorant Garamond",serif;font-size:26px;font-weight:600;color:var(--text);margin-bottom:7px;}
+.mu{background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:9px;padding:11px 14px;margin-bottom:14px;font-size:13px;color:var(--gold);font-weight:600;}
+.mds{font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:20px;}
+.mbtn{width:100%;padding:13px;background:var(--gold);border:none;border-radius:9px;color:#080810;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;}
+/* IMPORT */
+.founder-badge{background:linear-gradient(135deg,var(--gold-light),var(--gold));color:#080810;font-family:"Syne",sans-serif;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:3px 9px;border-radius:4px;display:inline-flex;align-items:center;gap:4px;}
+.owner-banner{background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.05));border:1px solid var(--gold-border);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gold);font-weight:600;}
+.team-member{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);}
+.team-member:last-child{border-bottom:none;}
+.team-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold-light),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff;flex-shrink:0;}
+.team-info{flex:1;}
+.team-name{font-size:14px;font-weight:600;color:var(--text);}
+.team-role{font-size:11px;color:var(--text-muted);margin-top:1px;}
+.team-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
+.badge-master{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);}
+.badge-member{background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);}
+.invite-box{background:var(--surface2);border:2px dashed var(--border);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;}
+.invite-box:hover{border-color:var(--gold-border);background:var(--gold-dim);}
+.imp-drop{border:2px dashed var(--border);border-radius:10px;padding:26px 14px;text-align:center;cursor:pointer;transition:all 0.3s;}
+.imp-drop:hover,.imp-drop.drag{border-color:var(--gold-border);background:var(--gold-dim);}
+/* BOTTOM NAV */
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--sidebar);border-top:1px solid var(--border);padding:7px 0 10px;z-index:50;}
+.bni{display:flex;justify-content:space-around;}
+.bn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 10px;cursor:pointer;border:none;background:transparent;color:var(--text-muted);font-family:"DM Sans",sans-serif;font-size:10px;font-weight:500;transition:color 0.2s;}
+.bn.active{color:var(--gold);}
+.bn svg{width:19px;height:19px;}
+/* CONFETTI */
+.cp{position:fixed;width:8px;height:8px;top:-10px;animation:cf linear forwards;border-radius:2px;pointer-events:none;z-index:700;}
+@keyframes cf{to{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;vertical-align:middle;}
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);}.sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;padding:14px;padding-bottom:76px;}.topbar{display:flex;}.bnav{display:block;}
+  .sr{grid-template-columns:1fr 1fr;}.fgrid{grid-template-columns:1fr;}.fg.full{grid-column:span 1;}
+  .ar{grid-template-columns:1fr;}.full{grid-column:span 1;}
+  .drw{width:100%;right:-100%;}.drw.show{right:0;}
+  .wbp{width:calc(100vw - 28px);right:14px;bottom:66px;}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="s-logo">
+    <div class="lw"><span class="lh">Hive</span><span class="lf">flo</span></div>
+    <div class="ltag">From notes to close</div>
+  </div>
+  <div class="nav">
+    <div class="ns">Main</div>
+    <button class="ni active" onclick="P('scan',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2m3 0h2M14 18h2" stroke-linecap="round"/></svg>Scan Card</button>
+    <button class="ni" onclick="P('con',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>Contacts</button>
+    <button class="ni" onclick="openBee()"><span style="font-size:15px">🐝</span>Bee AI</button>
+    <div class="ns">Account</div>
+    <button class="ni" onclick="P('ach',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M8.56 2.75c4.37 6.03 6.02 9.42 8.03 17.72m2.54-15.38c-3.72 4.35-8.94 5.66-16.88 5.85m19.5 1.9c-3.5-.93-6.63-.82-8.94 0-2.58.92-5.01 2.86-7.44 6.32"/></svg>Achievements</button>
+    <button class="ni" onclick="P('ref',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Refer a Friend</button>
+    <button class="ni" onclick="P('set',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings</button>
+  </div>
+  <div class="s-bottom">
+    <div class="ucard">
+      <div class="uemail" id="sEmail">ronald@hiveflo.app</div>
+      <div class="uplan" id="sidebarPlan">🐝 Starter</div>
+      <div class="uprof" id="sProfLabel" id="sProfLabel">🏦 Mortgage LO</div>
+      <button class="tbtn" onclick="toggleTheme()" id="tbtn1">☀️ Day Mode</button>
+      <button class="lbtn">Sign Out</button>
+    </div>
+  </div>
+</nav>
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="tl"><span class="lh">Hive</span><span class="lf" style="font-style:italic">flo</span></div>
+    <div class="tr">
+      <button class="ttheme" onclick="toggleTheme()" id="tbtn2">☀️</button>
+      <button class="icnbtn" onclick="document.getElementById('sidebar').classList.toggle('open')"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    </div>
+  </div>
+  <div class="wlc">
+    <h1>Good to have you, <em id="wName">Ronald</em> 🐝</h1>
+    <p id="wSub">Ready to build your pipeline today — scan a card or view your contacts below.</p>
+  </div>
+  <div class="sr">
+    <div class="sc" onclick="P('ach',null)" title="View Achievements">
+      <div class="sn" id="stScans">7</div>
+      <div class="sl">Total Scans</div>
+      <div class="tbar"><div class="tfill" id="tFill" style="width:70%"></div></div>
+      <div class="tlbl" id="tLbl">3 to unlock 📸 Photo Pro</div>
+    </div>
+    <div class="sc"><div class="sn" id="stCon">5</div><div class="sl" id="stConLbl">Contacts</div><div class="ss">Saved to CRM</div></div>
+    <div class="sc"><div class="sn" id="stTod">2</div><div class="sl">Today</div><div class="ss">Cards scanned today</div></div>
+  </div>
+  <!-- SCAN PANEL -->
+  <div id="p-scan">
+    <div class="card">
+      <div class="ch"><div class="ct">✦ Scan Business Card</div><div class="cbdg">AI Powered</div></div>
+      <!-- Toggle buttons -->
+      <div style="display:flex;gap:8px;padding:0 22px 14px;">
+        <button id="btnUpload" onclick="switchScanMode('upload')" style="flex:1;padding:9px;border-radius:8px;background:var(--gold);border:none;color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">📸 Upload Card</button>
+        <button id="btnQR" onclick="switchScanMode('qr')" style="flex:1;padding:9px;border-radius:8px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;">&#9638; Scan QR Code</button>
+      </div>
+      <!-- Upload mode -->
+      <div id="modeUpload">
+        <div class="uz" id="uz" onclick="document.getElementById('fi').click()">
+          <input type="file" id="fi" style="display:none" accept="image/*" onchange="onFile(event)">
+          <div id="uzc"><div class="ui">📸</div><div class="ut">Upload Business Card</div><div class="usub">Tap to take a photo or upload from gallery</div></div>
+        </div>
+      </div>
+      <!-- QR mode -->
+      <div id="modeQR" style="display:none;margin:0 22px 14px;">
+        <div style="background:var(--surface2);border:2px dashed var(--border);border-radius:13px;padding:20px;text-align:center;">
+          <div id="qrReaderContainer" style="max-width:260px;margin:0 auto 14px;border-radius:10px;overflow:hidden;display:none;"></div>
+          <div id="qrPlaceholder">
+            <div style="font-size:36px;margin-bottom:10px;">&#9638;</div>
+            <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;">Scan a QR Code</div>
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Point your camera at any QR code to extract contact info</div>
+            <button onclick="startQRScanner()" style="background:var(--gold);border:none;color:#fff;padding:11px 24px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;">&#9654; Start Camera</button>
+          </div>
+          <div id="qrActive" style="display:none;">
+            <div style="font-size:11px;color:var(--gold);font-weight:600;margin-bottom:10px;letter-spacing:0.08em;text-transform:uppercase;">Camera Active — Point at QR Code</div>
+            <button onclick="stopQRScanner()" style="background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:8px 18px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;">&#9632; Stop Camera</button>
+          </div>
+          <div id="qrResult" style="display:none;margin-top:12px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:8px;padding:11px;font-size:12px;color:var(--gold);word-break:break-all;"></div>
+        </div>
+      </div>
+      <div class="exs"><button class="bex" id="bex" onclick="doExtract()">✦ EXTRACT CARD</button></div>
+      <div id="res" style="display:none" class="res">
+        <div class="rtabs">
+          <button class="rtab on" onclick="RT('c',this)">📋 Contact</button>
+          <button class="rtab" onclick="RT('e',this)">✉️ Email</button>
+          <button class="rtab" onclick="RT('t',this)">💬 Text</button>
+        </div>
+        <div id="rt-c">
+          <div class="fgrid">
+            <div class="fg"><label class="fl">First Name</label><input class="fi" id="rFn" value="Christy"></div>
+            <div class="fg"><label class="fl">Last Name</label><input class="fi" id="rLn" value="Llanos Lynch"></div>
+            <div class="fg"><label class="fl">Phone</label><input class="fi" id="rPh" value="786-295-3270"></div>
+            <div class="fg"><label class="fl">Email</label><input class="fi" id="rEm" value="christy@klockparker.com"></div>
+            <div class="fg"><label class="fl">Title</label><input class="fi" id="rTi" value="Realtor-Associate"></div>
+            <div class="fg"><label class="fl">Company</label><input class="fi" id="rCo" value="Coldwell Banker Realty"></div>
+            <div class="fg full"><label class="fl">Address</label><input class="fi" id="rAd" value="4000 Ponce De Leon Blvd., Suite 700, Coral Gables, FL"></div>
+            <div class="fg full"><label class="fl">Notes</label><textarea class="fi" id="rNo" rows="2">Global Luxury Specialist. Met at networking event.</textarea></div>
+          </div>
+          <div class="ar">
+            <button class="btn btng full" id="saveBtn" onclick="doSave()">🐝 Save to HiveFlow CRM</button>
+            <button class="btn btno" onclick="doVCard()">💾 Save to Phone</button>
+            <button class="btn btno" onclick="resetScan()">🔄 New Scan</button>
+          </div>
+        </div>
+        <div id="rt-e" style="display:none">
+          <div class="psub">Subject: Great connecting with you, Christy!</div>
+          <div class="pbx">Hi Christy,
+
+It was so great meeting you today! As a Global Luxury Specialist, I know your clients expect nothing but the best.
+
+I specialize in jumbo, conventional, and creative financing. I would love to be your go-to lender for your luxury buyers.
+
+Ronald Cepeda | MLO NMLS #407464
+📞 305-785-3915
+ronald.cepeda@pmfmortgage.com</div>
+          <div class="ar"><button class="btn btng" onclick="openGmail()">✉️ Open in Gmail</button><button class="btn btno" onclick="copyEmail()">📋 Copy</button></div>
+        </div>
+        <div id="rt-t" style="display:none">
+          <div class="pbx">Hey Christy! Ronald Cepeda here — mortgage broker specializing in luxury and jumbo financing. Great meeting you! Would love to be your go-to lender. Fast closings, creative solutions. Lets connect! 🏠 📞 305-785-3915</div>
+          <div class="ar"><button class="btn btng full" onclick="copyText()">📋 Copy Text Message</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- CONTACTS PANEL -->
+  <div id="p-con" style="display:none">
+    <div class="card">
+      <div class="ch">
+        <div class="ct">📋 Your Contacts</div>
+        <div class="cbtns">
+          <div class="cbdg" id="conBadge">5 contacts</div>
+          <button class="btn btno" onclick="showImp()" style="padding:6px 12px;font-size:12px;">📥 Import</button>
+          <button class="btn btng" onclick="showAC()" style="padding:6px 12px;font-size:12px;">+ Add</button>
+        </div>
+      </div>
+      <div style="padding:14px" id="conList">
+        <div class="crow" onclick="openC({n:'Christy Llanos Lynch',ti:'Realtor-Associate | Global Luxury Specialist',co:'Coldwell Banker Realty',ph:'786-295-3270',em:'christy@klockparker.com',ad:'4000 Ponce De Leon Blvd., Suite 700, Coral Gables, FL',dt:'May 31',nt:'Global Luxury Specialist. Met at networking event.',ic:'C'})"><div class="cav">C</div><div><div class="cn">Christy Llanos Lynch</div><div class="cm">Coldwell Banker Realty · 786-295-3270</div></div><div class="cd">May 31</div><span style="color:var(--text-muted);margin-left:4px">›</span></div>
+        <div class="crow" onclick="openC({n:'Corey Coker',ti:'Realtor',co:'Coldwell Banker Realty',ph:'614-589-1996',em:'corey.coker@cbrealty.com',ad:'175 S 3rd St., Suite 100, Columbus, OH',dt:'May 31',nt:'Met at event. Columbus OH.',ic:'C'})"><div class="cav">C</div><div><div class="cn">Corey Coker</div><div class="cm">Coldwell Banker Realty · 614-589-1996</div></div><div class="cd">May 31</div><span style="color:var(--text-muted);margin-left:4px">›</span></div>
+        <div class="crow" onclick="openC({n:'Karen Sanchez',ti:'',co:'',ph:'786-351-6036',em:'ksanco224@gmail.com',ad:'',dt:'May 30',nt:'Credit 700+. W2 Amex consultant. Getting divorced. Selling house netting $250k.',ic:'K'})"><div class="cav">K</div><div><div class="cn">Karen Sanchez</div><div class="cm">786-351-6036 · Lead</div></div><div class="cd">May 30</div><span style="color:var(--text-muted);margin-left:4px">›</span></div>
+        <div class="crow" onclick="openC({n:'Austin Graham',ti:'',co:'',ph:'786-712-3258',em:'',ad:'',dt:'May 29',nt:'Credit 670. Self employed E-Commerce. FHA. $340k offer. FTHB.',ic:'A'})"><div class="cav">A</div><div><div class="cn">Austin Graham</div><div class="cm">Lead · FHA Purchase · $340k</div></div><div class="cd">May 29</div><span style="color:var(--text-muted);margin-left:4px">›</span></div>
+        <div class="crow" onclick="openC({n:'Sarah Delgado',ti:'Realtor',co:'Sunrise Realty Group',ph:'786-555-0194',em:'sarah@sunriserealty.com',ad:'Coral Gables, FL',dt:'May 28',nt:'Demo contact.',ic:'S'})"><div class="cav">S</div><div><div class="cn">Sarah Delgado</div><div class="cm">Sunrise Realty Group · 786-555-0194</div></div><div class="cd">May 28</div><span style="color:var(--text-muted);margin-left:4px">›</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- ACHIEVEMENTS PANEL -->
+  <div id="p-ach" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="ct">🏆 Achievements</div><div class="cbdg" id="achBadge">📸 Photo Pro</div></div>
+      <div style="padding:20px">
+        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.05));border:1px solid var(--gold-border);border-radius:14px;padding:18px;margin-bottom:22px;text-align:center">
+          <div style="font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:7px">Current Tier</div>
+          <div id="achTierName" style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--text);margin-bottom:4px">📸 Photo Pro</div>
+          <div id="achTierDesc" style="font-size:13px;color:var(--text-dim);margin-bottom:12px;line-height:1.5">You can now scan anything — whiteboards, notes, flyers, name tags.</div>
+          <div style="background:var(--surface2);border-radius:8px;height:7px;overflow:hidden;margin-bottom:5px"><div id="achFill" style="height:100%;background:linear-gradient(90deg,var(--gold-light),var(--gold));border-radius:8px;width:28%;transition:width 1s"></div></div>
+          <div style="font-size:12px;color:var(--text-muted)" id="achNext">18 more scans to unlock 🐝 Busy Bee</div>
+        </div>
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px">All Milestones</div>
+      </div>
+      <div id="achList" style="border-top:1px solid var(--border)"></div>
+    </div>
+  </div>
+  <!-- REFER PANEL -->
+  <div id="p-ref" style="display:none">
+    <div class="card">
+      <div class="ch"><div class="ct">🎁 Refer a Friend</div><div class="cbdg">Free Month</div></div>
+      <div style="padding:22px">
+        <div style="background:linear-gradient(135deg,rgba(201,168,76,0.2),rgba(201,168,76,0.05));border:1px solid var(--gold-border);border-radius:14px;padding:18px;margin-bottom:20px;text-align:center">
+          <div style="font-size:34px;margin-bottom:7px">🐝</div>
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--gold);margin-bottom:5px">Give a Month, Get a Month</div>
+          <div style="font-size:13px;color:var(--text-dim);line-height:1.6">Share your link. When your friend subscribes, you both get <strong style="color:var(--gold)">1 month free</strong>.</div>
+        </div>
+        <label class="fl" style="margin-bottom:7px">Your Referral Link</label>
+        <div style="display:flex;gap:8px;margin-bottom:18px">
+          <input class="fi" id="refLink" value="https://hiveflo.app/signup?ref=RONALD2026" readonly style="flex:1;font-size:12px;cursor:pointer" onclick="this.select()">
+          <button class="btn btng" id="refCopyBtn" onclick="copyRef()" style="flex-shrink:0;padding:10px 14px;font-size:12px;white-space:nowrap">📋 Copy</button>
+        </div>
+        <label class="fl" style="margin-bottom:9px">Share Your Link</label>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:22px">
+          <button class="btn btno" onclick="refText()" style="flex-direction:column;gap:4px;padding:13px 6px"><span style="font-size:19px">💬</span><span style="font-size:11px">Text</span></button>
+          <button class="btn btno" onclick="refEmail()" style="flex-direction:column;gap:4px;padding:13px 6px"><span style="font-size:19px">✉️</span><span style="font-size:11px">Email</span></button>
+          <button class="btn btno" onclick="refWA()" style="flex-direction:column;gap:4px;padding:13px 6px"><span style="font-size:19px">💚</span><span style="font-size:11px">WhatsApp</span></button>
+          <button class="btn btno" onclick="showQR()" style="flex-direction:column;gap:4px;padding:13px 6px"><span style="font-size:19px">📱</span><span style="font-size:11px">QR Code</span></button>
+        </div>
+        <div id="qrCard" style="display:none;margin-bottom:20px">
+          <div style="background:var(--surface2);border:1px solid var(--gold-border);border-radius:14px;padding:20px;text-align:center">
+            <div style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px">📱 Scan to Join HiveFlow</div>
+            <div style="background:#fff;border-radius:10px;padding:14px;display:inline-block;margin-bottom:14px"><img id="qrImg" src="" alt="QR" style="width:170px;height:170px;display:block"></div>
+            <div style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.5">Show this to a friend. They scan it and get <strong style="color:var(--gold)">1 month free</strong>.</div>
+            <div style="display:flex;gap:8px;justify-content:center">
+              <button class="btn btng" onclick="dlQR()" style="padding:9px 18px;font-size:13px">⬇️ Save</button>
+              <button class="btn btno" onclick="document.getElementById('qrCard').style.display='none'" style="padding:9px 18px;font-size:13px">✕ Close</button>
+            </div>
+          </div>
+        </div>
+        <div class="rstat">
+          <div class="sc" style="cursor:default"><div class="sn">2</div><div class="sl">Friends Referred</div></div>
+          <div class="sc" style="cursor:default"><div class="sn">1</div><div class="sl">Free Months</div></div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 15px;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:600;color:var(--text)">Maria Lopez</div><div style="font-size:11px;color:var(--text-muted)">Signed up May 28</div></div><div style="font-size:11px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);padding:2px 9px;border-radius:4px">✅ Earned</div></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 15px"><div><div style="font-size:13px;font-weight:600;color:var(--text)">James Rivera</div><div style="font-size:11px;color:var(--text-muted)">Invited May 30</div></div><div style="font-size:11px;font-weight:700;color:var(--gold);background:var(--gold-dim);border:1px solid var(--gold-border);padding:2px 9px;border-radius:4px">⏳ Pending</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- SETTINGS PANEL -->
+  <div id="p-set" style="display:none">
+    <div class="ssec"><div class="stl">Account</div>
+      <div class="srow"><span class="slbl">Email</span><span class="sval" id="setEmail">ronald@hiveflo.app</span></div>
+      <div class="srow"><span class="slbl">Plan</span><span class="sval">Starter — $15/month</span></div>
+      <div class="srow"><span class="slbl">Profession</span><span class="sval" id="setProfVal">🏦 Mortgage LO</span></div>
+      <div class="srow"><span class="slbl">Member since</span><span class="sval">May 2026</span></div>
+    </div>
+    <div class="ssec"><div class="stl">Appearance</div>
+      <div class="srow"><span class="slbl">Theme</span><button class="tbtn" style="width:auto;padding:6px 14px" onclick="toggleTheme()" id="tbtn3">☀️ Day Mode</button></div>
+    </div>
+    <div class="ssec"><div class="stl">API Integration</div>
+      <div class="srow" style="flex-direction:column;align-items:flex-start;gap:9px">
+        <div><span class="slbl">Your API Key</span><div style="font-size:12px;color:var(--text-muted);margin-top:1px">Connect HiveFlow to your CRM, Zapier, or any external tool.</div></div>
+        <div style="display:flex;gap:7px;width:100%">
+          <input class="fi" id="apiKey" value="hf_live_rk9x2a4mQ7vBz1nLpKwY3cXsRtJe8dUo" readonly style="flex:1;font-size:12px;font-family:monospace;cursor:pointer" onclick="this.select()">
+          <button class="btn btng" onclick="copyAPI()" id="apibtn" style="flex-shrink:0;padding:9px 13px;font-size:12px;white-space:nowrap">📋 Copy</button>
+        </div>
+        <button class="btn btno" onclick="regenAPI()" style="font-size:12px;padding:7px 13px;color:var(--text-muted)">🔄 Regenerate Key</button>
+      </div>
+      <div class="srow"><span class="slbl">Webhook URL</span><span class="sval" style="font-size:12px;font-family:monospace;color:var(--gold)">hiveflo.app/api/webhook</span></div>
+      <div class="srow"><span class="slbl">API Docs</span><a href="#" style="color:var(--gold);font-size:13px;text-decoration:none">View Documentation →</a></div>
+    </div>
+    <div class="ssec"><div class="stl">Support</div>
+      <div class="srow"><span class="slbl">Email</span><span class="sval" style="color:var(--gold)">support@hiveflo.app</span></div>
+      <div class="srow"><span class="slbl">Version</span><span class="sval">1.0.0</span></div>
+    </div>
+  </div>
+</main>
+</div>
+<!-- CONTACT DETAIL DRAWER -->
+<div class="ov" id="cdOv" onclick="closeC()"></div>
+<div class="drw" id="cdDrw">
+  <div class="dh"><div class="dav" id="cdAv">C</div><div><div class="dn" id="cdNm">Name</div><div class="dt" id="cdTi">Title</div></div><button class="dc" onclick="closeC()">✕</button></div>
+  <div class="dact">
+    <a class="dab gcall" id="cdCall" href="tel:"><span>📞</span>Call</a>
+    <button class="dab" id="cdSavePh" onclick="saveCPhone()" style="color:#22c55e;border-color:rgba(34,197,94,0.3);background:rgba(34,197,94,0.08)"><span>💾</span>Save to Phone</button>
+    <button class="dab" onclick="beeForC('email')"><span>✉️</span>Write Email</button>
+    <button class="dab gtext" onclick="beeForC('text')"><span>💬</span>Write Text</button>
+  </div>
+  <div class="dsec">
+    <div class="dsect">Contact Info</div>
+    <div class="drow"><span class="drl">Phone</span><span class="drv" id="cdPh">—</span></div>
+    <div class="drow"><span class="drl">Email</span><span class="drv" id="cdEm">—</span></div>
+    <div class="drow"><span class="drl">Company</span><span class="drv" id="cdCo">—</span></div>
+    <div class="drow"><span class="drl">Address</span><span class="drv" id="cdAd">—</span></div>
+    <div class="drow"><span class="drl">Added</span><span class="drv" id="cdDt">—</span></div>
+    <div class="dsect">Notes</div>
+    <textarea class="dnta" id="cdNt" placeholder="Add notes..."></textarea>
+  </div>
+  <button class="dsavebtn" onclick="saveCNotes()">💾 Save Notes</button>
+</div>
+<!-- ADD CONTACT DRAWER -->
+<div class="ov" id="acOv" onclick="closeAC()"></div>
+<div class="drw" id="acDrw">
+  <div class="dh"><div class="dav" style="background:linear-gradient(135deg,#6366f1,#4f46e5);font-size:19px">➕</div><div><div class="dn">Add New Contact</div><div class="dt">Fill in details manually</div></div><button class="dc" onclick="closeAC()">✕</button></div>
+  <div style="padding:18px">
+    <div class="fgrid">
+      <div class="fg"><label class="fl">First Name</label><input class="fi" id="acFn" placeholder="John"></div>
+      <div class="fg"><label class="fl">Last Name</label><input class="fi" id="acLn" placeholder="Smith"></div>
+      <div class="fg"><label class="fl">Phone</label><input class="fi" id="acPh" placeholder="305-000-0000"></div>
+      <div class="fg"><label class="fl">Email</label><input class="fi" id="acEm" placeholder="john@email.com"></div>
+      <div class="fg"><label class="fl">Title</label><input class="fi" id="acTi" placeholder="Realtor..."></div>
+      <div class="fg"><label class="fl">Company</label><input class="fi" id="acCo" placeholder="Company"></div>
+      <div class="fg full"><label class="fl">Address</label><input class="fi" id="acAd" placeholder="123 Main St, Miami FL"></div>
+      <div class="fg full"><label class="fl">Contact Type</label><select class="fi" id="acTy"><option>Real Estate Agent</option><option>Mortgage Lead</option><option>Builder</option><option>Title Agent</option><option>Insurance Agent</option><option>Attorney</option><option>Business Professional</option><option>Recruiter</option><option>Financial Advisor</option><option>Consultant</option><option>Entrepreneur</option><option>Sales Professional</option><option>Other</option></select></div>
+      <div class="fg full"><label class="fl">Notes</label><textarea class="fi" id="acNt" rows="3" placeholder="How you met..."></textarea></div>
+    </div>
+  </div>
+  <div style="padding:0 18px 20px;display:flex;gap:9px">
+    <button class="btn btng" id="acSave" onclick="saveAC()" style="flex:1;padding:13px">🐝 Save Contact</button>
+    <button class="btn btno" onclick="closeAC()" style="padding:13px 16px">Cancel</button>
+  </div>
+</div>
+<!-- IMPORT DRAWER -->
+<div class="ov" id="impOv" onclick="closeImp()"></div>
+<div class="drw" id="impDrw" style="width:400px">
+  <div class="dh"><div class="dav" style="background:linear-gradient(135deg,#6366f1,#4f46e5);font-size:19px">📥</div><div><div class="dn">Import Contacts</div><div class="dt">Bulk import from CSV</div></div><button class="dc" onclick="closeImp()">✕</button></div>
+  <div id="imp1" style="padding:18px">
+    <div style="background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:11px;padding:15px;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--gold);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:7px">Step 1 — Get the Template</div>
+      <div style="font-size:13px;color:var(--text-dim);margin-bottom:11px;line-height:1.5">Download the template, fill in your contacts (Excel or Google Sheets), save as .csv</div>
+      <button class="btn btng" onclick="dlTemplate()" style="width:100%;padding:11px;font-size:13px">⬇️ Download CSV Template</button>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:15px;margin-bottom:16px">
+      <div style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--text);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:9px">Step 2 — Upload Your File</div>
+      <div class="imp-drop" id="impDrop" onclick="document.getElementById('impFile').click()" ondragover="impDO(event)" ondrop="impDD(event)" ondragleave="this.classList.remove('drag')">
+        <input type="file" id="impFile" style="display:none" accept=".csv" onchange="onImpFile(event)">
+        <div style="font-size:30px;margin-bottom:7px">📂</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px">Click or drag your CSV here</div>
+        <div style="font-size:12px;color:var(--text-muted)">Supports .csv files</div>
+      </div>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px">
+      <div style="font-size:10px;font-weight:700;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:7px">Required Columns</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        <span style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--text-dim)">First Name</span>
+        <span style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--text-dim)">Last Name</span>
+        <span style="background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--gold)">Optional: Phone, Email, Company, Title, Notes</span>
+      </div>
+    </div>
+  </div>
+  <div id="imp2" style="display:none;padding:18px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px">
+      <div><div style="font-size:15px;font-weight:700;color:var(--text)" id="impCnt">0 contacts</div><div style="font-size:12px;color:var(--text-muted)" id="impLim"></div></div>
+      <button onclick="resetImp()" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:12px;text-decoration:underline">← Change file</button>
+    </div>
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:9px;overflow:hidden;margin-bottom:14px;max-height:200px;overflow-y:auto" id="impPrev"></div>
+    <div id="impWarn" style="display:none;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:11px;margin-bottom:12px;font-size:13px;color:#f87171"></div>
+    <div id="impProg" style="display:none;margin-bottom:12px"><div style="background:var(--surface2);border-radius:20px;height:5px;overflow:hidden"><div id="impPBar" style="height:100%;background:linear-gradient(90deg,var(--gold-light),var(--gold));border-radius:20px;width:0%;transition:width 0.3s"></div></div><div id="impPTxt" style="font-size:12px;color:var(--text-muted);margin-top:5px;text-align:center"></div></div>
+    <button class="btn btng" id="impConf" onclick="doImport()" style="width:100%;padding:13px;font-size:14px">🐝 Import Contacts</button>
+    <button class="btn btno" onclick="closeImp()" style="width:100%;padding:11px;font-size:13px;margin-top:8px">Cancel</button>
+  </div>
+  <div id="imp3" style="display:none;padding:36px 18px;text-align:center">
+    <div style="font-size:50px;margin-bottom:14px">🎉</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);margin-bottom:7px" id="imp3T">Import Complete!</div>
+    <div style="font-size:13px;color:var(--text-dim);margin-bottom:22px;line-height:1.6" id="imp3M"></div>
+    <button class="btn btng" onclick="closeImp()" style="width:100%;padding:13px">View My Contacts →</button>
+  </div>
+</div>
+<!-- BEE AI PANEL -->
+<div class="wbp" id="wbPanel">
+  <div class="wbh"><div class="wbav">🐝</div><div><div class="wbtl">Worker Bee</div><div class="wbst">Your personal AI assistant</div></div><button class="wbcl" onclick="toggleBee()">✕</button></div>
+  <div class="wbm" id="wbMsgs"><div class="msg bot">Hey Ronald! I am Worker Bee — your personal AI assistant. I can draft follow-up emails, write texts, answer mortgage questions, and more. What do you need?</div></div>
+  <div class="wbsg" id="wbSugg">
+    <button class="wbs" onclick="wbQ('Draft a follow-up email for Christy Llanos Lynch')">✉️ Follow-up for Christy</button>
+    <button class="wbs" onclick="wbQ('What docs do I need for FHA?')">📋 FHA checklist</button>
+    <button class="wbs" onclick="wbQ('Write a short text for a new realtor partner')">💬 Realtor text</button>
+  </div>
+  <div class="wbir"><input class="wbin" id="wbIn" placeholder="Ask me anything..." onkeydown="if(event.key==='Enter')wbSend()"><button class="wbsnd" onclick="wbSend()">➤</button></div>
+</div>
+<!-- MILESTONE POPUP -->
+<div class="mpop" id="mpop">
+  <div class="mcard"><span class="mic" id="mIc">📸</span><div class="mlbl" id="mLbl">Milestone!</div><div class="mtl" id="mTl">Photo Pro!</div><div class="mu" id="mU">📸 Scan Anything unlocked</div><div class="mds" id="mDs">Take a photo of anything and AI extracts the data.</div><button class="mbtn" onclick="closeMile()">🐝 Lets go!</button></div>
+</div>
+<!-- BOTTOM NAV -->
+<div class="bnav">
+  <div class="bni">
+    <button class="bn active" id="bn-scan" onclick="P('scan',null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Scan</button>
+    <button class="bn" id="bn-con" onclick="P('con',null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Contacts</button>
+    <button class="bn" id="bn-bee" onclick="toggleBee()"><span style="font-size:18px">🐝</span>Bee AI</button>
+    <button class="bn" id="bn-ref" onclick="P('ref',null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>Refer</button>
+    <button class="bn" id="bn-set" onclick="P('set',null)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2m0 16v2m-7.07-14.07 1.41 1.41m9.9 9.9 1.41 1.41M2 12h2m16 0h2"/></svg>Settings</button>
+  </div>
+</div>
+<script>
+// ── THEME ──────────────────────────────────────────────────
+// ── QR SCANNER ──────────────────────────────────────────
+var qrScanner = null;
+
+function switchScanMode(mode) {
+  var uploadBtn = document.getElementById('btnUpload');
+  var qrBtn = document.getElementById('btnQR');
+  var modeUpload = document.getElementById('modeUpload');
+  var modeQR = document.getElementById('modeQR');
+
+  if (mode === 'upload') {
+    uploadBtn.style.background = 'var(--gold)'; uploadBtn.style.color = '#fff';
+    uploadBtn.style.border = 'none';
+    qrBtn.style.background = 'transparent'; qrBtn.style.color = 'var(--text-dim)';
+    qrBtn.style.border = '1px solid var(--border)';
+    modeUpload.style.display = 'block';
+    modeQR.style.display = 'none';
+    stopQRScanner();
+  } else {
+    qrBtn.style.background = 'var(--gold)'; qrBtn.style.color = '#fff';
+    qrBtn.style.border = 'none';
+    uploadBtn.style.background = 'transparent'; uploadBtn.style.color = 'var(--text-dim)';
+    uploadBtn.style.border = '1px solid var(--border)';
+    modeUpload.style.display = 'none';
+    modeQR.style.display = 'block';
+  }
+}
+
+function startQRScanner() {
+  // Load html5-qrcode library dynamically
+  if (!window.Html5Qrcode) {
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js';
+    script.onload = function() { initQRScanner(); };
+    document.head.appendChild(script);
+  } else {
+    initQRScanner();
+  }
+}
+
+function initQRScanner() {
+  document.getElementById('qrPlaceholder').style.display = 'none';
+  document.getElementById('qrActive').style.display = 'block';
+  document.getElementById('qrReaderContainer').style.display = 'block';
+  document.getElementById('qrResult').style.display = 'none';
+
+  try {
+    qrScanner = new Html5Qrcode('qrReaderContainer');
+    qrScanner.start(
+      { facingMode: 'environment' },
+      { fps: 10, qrbox: { width: 220, height: 220 } },
+      function(decodedText) {
+        // QR code detected!
+        stopQRScanner();
+        handleQRResult(decodedText);
+      },
+      function(err) { /* scanning, ignore */ }
+    ).catch(function(err) {
+      document.getElementById('qrPlaceholder').style.display = 'block';
+      document.getElementById('qrActive').style.display = 'none';
+      document.getElementById('qrReaderContainer').style.display = 'none';
+      alert('Camera access denied or not available. Please allow camera access and try again.');
+    });
+  } catch(e) {
+    alert('QR Scanner not available on this device.');
+  }
+}
+
+function stopQRScanner() {
+  if (qrScanner) {
+    qrScanner.stop().catch(function(){});
+    qrScanner = null;
+  }
+  var ph = document.getElementById('qrPlaceholder');
+  var ac = document.getElementById('qrActive');
+  var rc = document.getElementById('qrReaderContainer');
+  if (ph) ph.style.display = 'block';
+  if (ac) ac.style.display = 'none';
+  if (rc) rc.style.display = 'none';
+}
+
+function handleQRResult(text) {
+  var resultEl = document.getElementById('qrResult');
+  if (resultEl) {
+    resultEl.style.display = 'block';
+    resultEl.textContent = 'QR Code detected: ' + text;
+  }
+  // If it looks like a vCard, parse it
+  if (text.startsWith('BEGIN:VCARD')) {
+    parseVCard(text);
+  } else if (text.startsWith('http') || text.startsWith('www')) {
+    // It's a URL — show it and offer to open
+    if (resultEl) {
+      resultEl.innerHTML = '<strong>URL found:</strong> ' + text + '<br><br><a href="' + text + '" target="_blank" style="color:var(--gold)">Open Link</a>';
+    }
+  } else {
+    // Try to extract contact info from plain text
+    document.getElementById('rFn').value = text.split(' ')[0] || '';
+    document.getElementById('rLn').value = text.split(' ').slice(1).join(' ') || '';
+    // Show results
+    document.getElementById('res').style.display = 'block';
+    switchScanMode('upload');
+    confetti();
+  }
+}
+
+function parseVCard(vcard) {
+  var lines = vcard.split('\n');
+  var data = {};
+  lines.forEach(function(line) {
+    if (line.startsWith('FN:')) data.fn = line.replace('FN:', '').trim();
+    else if (line.startsWith('TEL')) data.tel = line.split(':')[1]?.trim();
+    else if (line.startsWith('EMAIL')) data.email = line.split(':')[1]?.trim();
+    else if (line.startsWith('ORG:')) data.org = line.replace('ORG:', '').trim();
+    else if (line.startsWith('TITLE:')) data.title = line.replace('TITLE:', '').trim();
+  });
+  if (data.fn) {
+    var parts = data.fn.split(' ');
+    document.getElementById('rFn').value = parts[0] || '';
+    document.getElementById('rLn').value = parts.slice(1).join(' ') || '';
+  }
+  if (data.tel) document.getElementById('rPh').value = data.tel;
+  if (data.email) document.getElementById('rEm').value = data.email;
+  if (data.org) document.getElementById('rCo').value = data.org;
+  if (data.title) document.getElementById('rTi').value = data.title;
+  document.getElementById('res').style.display = 'block';
+  switchScanMode('upload');
+  confetti();
+  // Increment scan count
+  var n = parseInt(document.getElementById('stScans').textContent) + 1;
+  document.getElementById('stScans').textContent = n;
+  updateTierUI(n); checkMile(n);
+}
+
+function toggleTheme(){
+  const h=document.documentElement,t=h.getAttribute("data-theme")==="dark"?"light":"dark";
+  h.setAttribute("data-theme",t);localStorage.setItem("hft",t);updateThemeBtns(t);
+}
+function updateThemeBtns(t){
+  const d=t==="dark",i=d?"☀️":"🌙",l=d?"Day Mode":"Night Mode";
+  ["tbtn1","tbtn3"].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=i+" "+l;});
+  const t2=document.getElementById("tbtn2");if(t2)t2.textContent=i;
+}
+const st=localStorage.getItem("hft")||"dark";
+document.documentElement.setAttribute("data-theme",st);updateThemeBtns(st);
+
+// ── MILESTONES ─────────────────────────────────────────────
+const MILES=[
+  {s:1,  i:"🌟",l:"First Sting!",     t:"You Scanned Your First Card!",u:"Welcome to HiveFlow",              d:"The journey begins. Every great network starts with one card.",tier:"Starter"},
+  {s:10, i:"📸",l:"Photo Pro",        t:"Scan Anything Unlocked!",      u:"📸 Photo Scan is now active",     d:"Take a photo of whiteboards, handwritten notes, flyers, or name tags. AI extracts all the data.",tier:"Photo Pro"},
+  {s:25, i:"🐝",l:"Busy Bee",         t:"Bee AI Pro Unlocked!",          u:"🐝 Bee AI Pro Mode activated",    d:"Worker Bee now references your full contact list for smarter, more personalized responses.",tier:"Busy Bee"},
+  {s:50, i:"📊",l:"Pipeline Builder", t:"Smart Follow-Up Unlocked!",    u:"📊 AI Follow-Up suggestions live",d:"HiveFlow now tells you who to reach out to today based on last contact date.",tier:"Pipeline Builder"},
+  {s:100,i:"👑",l:"Hive Legend",      t:"Hive Legend Status!",           u:"👑 CSV Export + Priority Support",d:"Export your full contact list anytime and get priority support.",tier:"Hive Legend"},
+  {s:250,i:"🏆",l:"Queen Bee",        t:"Queen Bee Achieved!",           u:"🏆 Early access to ALL new features",d:"You are in the top tier of HiveFlow users. Every new feature drops to you first.",tier:"Queen Bee"},
+];
+function curTier(n){let t=null;for(const m of MILES){if(n>=m.s)t=m;}return t||MILES[0];}
+function nextMile(n){return MILES.find(m=>m.s>n);}
+function updateTierUI(n){
+  const cur=curTier(n),nxt=nextMile(n);
+  if(nxt){
+    const prev=cur?cur.s:0,pct=Math.min(100,((n-prev)/(nxt.s-prev))*100);
+    const f=document.getElementById("tFill");if(f)f.style.width=pct+"%";
+    const l=document.getElementById("tLbl");if(l)l.textContent=(nxt.s-n)+" to unlock "+nxt.i+" "+nxt.l;
+  } else {
+    const f=document.getElementById("tFill");if(f)f.style.width="100%";
+    const l=document.getElementById("tLbl");if(l){l.textContent="👑 Max Tier!";l.style.color="var(--gold)";}
+  }
+  const ab=document.getElementById("achBadge");if(ab&&cur)ab.textContent=cur.i+" "+cur.tier;
+  const at=document.getElementById("achTierName");if(at&&cur)at.textContent=cur.i+" "+cur.tier;
+  const ad=document.getElementById("achTierDesc");if(ad&&cur)ad.textContent=cur.d;
+  const af=document.getElementById("achFill");
+  if(af&&nxt){const prev=cur?cur.s:0,pct=Math.min(100,((n-prev)/(nxt.s-prev))*100);af.style.width=pct+"%";}
+  const an=document.getElementById("achNext");
+  if(an)an.textContent=nxt?(nxt.s-n)+" more scans to unlock "+nxt.i+" "+nxt.l:"All milestones achieved!";
+  const al=document.getElementById("achList");
+  if(al)al.innerHTML=MILES.map(m=>{
+    const done=n>=m.s;
+    return "<div class=\"urow "+(done?"ulkd":"lkd")+"\">"+"<div class=\"uic\">"+m.i+"</div>"+"<div style=\"flex:1\"><div class=\"unm\">"+m.l+" <span style=\"font-size:11px;color:var(--text-muted);font-weight:400\">— "+m.s+" scans</span></div><div class=\"uds\">"+m.u+"</div></div>"+"<div class=\"ubdg "+(done?"bon":"boff")+"\">"+( done?"✅ Unlocked":"🔒 Locked")+"</div></div>";
+  }).join("");
+}
+function checkMile(n){
+  const hit=MILES.find(m=>m.s===n);if(!hit)return;
+  document.getElementById("mIc").textContent=hit.i;
+  document.getElementById("mLbl").textContent=hit.s+" Scans Reached!";
+  document.getElementById("mTl").textContent=hit.t;
+  document.getElementById("mU").textContent=hit.u;
+  document.getElementById("mDs").textContent=hit.d;
+  document.getElementById("mpop").classList.add("show");
+  confetti();
+}
+function closeMile(){document.getElementById("mpop").classList.remove("show");}
+// ── OWNER / FOUNDER ACCOUNT ─────────────────────────
+var IS_OWNER = false;
+
+function initOwnerMode(userData) {
+  var role = userData && userData.user_metadata && userData.user_metadata.role;
+  var plan = userData && userData.user_metadata && userData.user_metadata.plan;
+  IS_OWNER = (role === 'owner' || role === 'founder');
+  
+  if (IS_OWNER) {
+    // Show Founder badge in sidebar
+    var planEl = document.getElementById('sidebarPlan');
+    if (planEl) planEl.outerHTML = '<div class="founder-badge">🐝 Founder</div>';
+    
+    // Unlock all milestone tiers — show as all achieved
+    updateTierUI(999);
+    
+    // Unlock Hive Mind features
+    var badge = document.querySelector('.card-badge');
+    
+    // Show owner banner in settings
+    var setPanel = document.getElementById('p-set');
+    if (setPanel) {
+      var banner = document.createElement('div');
+      banner.className = 'owner-banner';
+      banner.innerHTML = '🐝 <span>Founder Account — All features unlocked. No limits. Ever.</span>';
+      setPanel.insertBefore(banner, setPanel.firstChild);
+    }
+    
+    // Override contact limit check — unlimited
+    window.getContactLimit = function() { return Infinity; };
+    
+    // Update billing section
+    var billingPlan = document.getElementById('billingPlan');
+    if (billingPlan) billingPlan.textContent = '🐝 Founder — Free Forever';
+    
+    // Update settings plan display
+    var settingsPlan = document.querySelector('.ssec .sval');
+    if (settingsPlan && settingsPlan.textContent.includes('Starter')) {
+      settingsPlan.textContent = 'Founder — Free Forever';
+    }
+    
+    console.log('🐝 Founder mode activated');
+  } else {
+    // Normal user — set tier based on actual scan count
+    updateTierUI(7);
+  }
+}
+
+// For preview — simulate normal user
+updateTierUI(7);
+// In production this gets called after auth: initOwnerMode(currentUser);
+
+// ── PANELS ─────────────────────────────────────────────────
+function P(name,btn){
+  ["scan","con","ach","ref","set"].forEach(p=>{
+    const el=document.getElementById("p-"+p);
+    if(el)el.style.display=p===name?"block":"none";
+  });
+  document.querySelectorAll(".ni").forEach(n=>n.classList.remove("active"));
+  document.querySelectorAll(".bn").forEach(n=>n.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  const bn=document.getElementById("bn-"+name);if(bn)bn.classList.add("active");
+  document.getElementById("sidebar").classList.remove("open");
+}
+function RT(t,btn){
+  ["c","e","t"].forEach(x=>document.getElementById("rt-"+x).style.display=x===t?"block":"none");
+  document.querySelectorAll(".rtab").forEach(b=>b.classList.remove("on"));btn.classList.add("on");
+}
+
+// ── SCANNER ────────────────────────────────────────────────
+function onFile(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const z=document.getElementById("uz");z.style.borderColor="var(--gold-border)";z.style.background="var(--gold-dim)";
+    document.getElementById("uzc").innerHTML="<img src=\""+ev.target.result+"\" style=\"max-width:100%;max-height:170px;border-radius:10px;object-fit:contain\">";
+  };r.readAsDataURL(f);
+}
+var lastFileData=null;
+
+function doExtract(){
+  var b=document.getElementById("bex");
+  b.innerHTML='<span class="spin"></span> EXTRACTING...';
+  b.disabled=true;b.style.background="var(--surface2)";b.style.color="var(--text-muted)";
+
+  function finishExtract(data){
+    b.innerHTML="✦ EXTRACT CARD";b.disabled=false;b.style.background="";b.style.color="";
+    if(data&&(data.first_name||data.last_name||data.full_name)){
+      if(data.first_name)document.getElementById("rFn").value=data.first_name;
+      if(data.last_name)document.getElementById("rLn").value=data.last_name;
+      if(data.phone)document.getElementById("rPh").value=data.phone;
+      if(data.email)document.getElementById("rEm").value=data.email;
+      if(data.title)document.getElementById("rTi").value=data.title;
+      if(data.company)document.getElementById("rCo").value=data.company;
+      var addr=[data.address,data.city,data.state,data.zip].filter(Boolean).join(", ");
+      if(addr)document.getElementById("rAd").value=addr;
+      if(data.notes)document.getElementById("rNo").value=data.notes;
+      var fn=data.first_name||data.full_name||"";
+      var co=data.company||"";
+      document.getElementById("emailBox").textContent="Subject: Great connecting with you, "+fn+"!\n\nHi "+fn+",\n\nIt was so great meeting you today!"+(co?" The team at "+co+" works with incredible clients.":"")+"\n\nI would love to be your go-to mortgage lender. Fast closings, conventional, FHA, VA, and jumbo loans.\n\nRonald Cepeda | MLO NMLS #407464\n305-785-3915";
+      document.getElementById("textBox").textContent="Hey "+fn+"! Ronald Cepeda here — mortgage broker specializing in fast closings. Great meeting you! Would love to be your go-to lender. 305-785-3915";
+    }
+    document.getElementById("res").style.display="block";
+    document.getElementById("res").scrollIntoView({behavior:"smooth",block:"nearest"});
+    confetti();
+    var n=parseInt(document.getElementById("stScans").textContent)+1;
+    document.getElementById("stScans").textContent=n;
+    updateTierUI(n);checkMile(n);
+  }
+
+  if(lastFileData){
+    fetch("/api/extract",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({image:lastFileData.base64,mediaType:lastFileData.mediaType})})
+    .then(function(r){return r.json();})
+    .then(function(data){finishExtract(data.contact||{});})
+    .catch(function(){finishExtract(null);});
+  } else {
+    setTimeout(function(){finishExtract(null);},1500);
+  }
+}
+function doSave(){
+  const b=document.getElementById("saveBtn");b.textContent="Saving...";
+  setTimeout(()=>{
+    b.textContent="✅ Saved to HiveFlow CRM!";b.style.background="#14532d";b.style.color="#4ade80";
+    setTimeout(()=>{b.textContent="🐝 Save to HiveFlow CRM";b.style.background="";b.style.color="";},3000);
+  },700);
+}
+function doVCard(){
+  const fn=document.getElementById("rFn").value,ln=document.getElementById("rLn").value;
+  const v="BEGIN:VCARD\nVERSION:3.0\nFN:"+fn+" "+ln+"\nTEL:"+document.getElementById("rPh").value+"\nEMAIL:"+document.getElementById("rEm").value+"\nEND:VCARD";
+  const blob=new Blob([v],{type:"text/vcard"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=(fn+"_"+ln+".vcf").replace(/ /g,"_");a.click();URL.revokeObjectURL(url);
+}
+function openGmail(){
+  const subj=encodeURIComponent("Great connecting with you, "+document.getElementById("rFn").value+"!");
+  const body=encodeURIComponent(document.querySelector("#rt-e .pbx").textContent);
+  const to=encodeURIComponent(document.getElementById("rEm").value);
+  window.open("https://mail.google.com/mail/?view=cm&to="+to+"&su="+subj+"&body="+body,"_blank");
+}
+function copyEmail(){navigator.clipboard.writeText(document.querySelector("#rt-e .pbx").textContent).then(()=>alert("Email copied!"));}
+function copyText(){navigator.clipboard.writeText(document.querySelector("#rt-t .pbx").textContent).then(()=>alert("Text copied!"));}
+function resetScan(){
+  document.getElementById("uz").style.borderColor="";document.getElementById("uz").style.background="";
+  document.getElementById("uzc").innerHTML="<div class=\"ui\">📸</div><div class=\"ut\">Upload Business Card</div><div class=\"usub\">Tap to take a photo or upload from gallery</div>";
+  document.getElementById("res").style.display="none";document.getElementById("fi").value="";
+}
+
+// ── CONTACTS ───────────────────────────────────────────────
+let cC=null;
+function openC(c){
+  cC=c;
+  document.getElementById("cdAv").textContent=c.ic;
+  document.getElementById("cdNm").textContent=c.n;
+  document.getElementById("cdTi").textContent=c.ti||c.co||"Contact";
+  document.getElementById("cdPh").textContent=c.ph||"—";
+  document.getElementById("cdEm").textContent=c.em||"—";
+  document.getElementById("cdCo").textContent=c.co||"—";
+  document.getElementById("cdAd").textContent=c.ad||"—";
+  document.getElementById("cdDt").textContent=c.dt||"—";
+  document.getElementById("cdNt").value=c.nt||"";
+  document.getElementById("cdCall").href=c.ph?"tel:"+c.ph.replace(/\D/g,""):"#";
+  document.getElementById("cdOv").classList.add("show");document.getElementById("cdDrw").classList.add("show");
+}
+function closeC(){document.getElementById("cdOv").classList.remove("show");document.getElementById("cdDrw").classList.remove("show");}
+function saveCPhone(){
+  if(!cC)return;
+  const v="BEGIN:VCARD\nVERSION:3.0\nFN:"+cC.n+"\nTEL:"+(cC.ph||"")+"\nEMAIL:"+(cC.em||"")+"\nORG:"+(cC.co||"")+"\nEND:VCARD";
+  const blob=new Blob([v],{type:"text/vcard"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download=cC.n.replace(/ /g,"_")+".vcf";a.click();URL.revokeObjectURL(url);
+  const b=document.getElementById("cdSavePh");b.innerHTML="<span>✅</span>Saved!";
+  setTimeout(()=>{b.innerHTML="<span>💾</span>Save to Phone";},2000);
+}
+function saveCNotes(){
+  const b=document.querySelector(".dsavebtn");b.textContent="✅ Notes Saved!";b.style.background="#14532d";
+  setTimeout(()=>{b.textContent="💾 Save Notes";b.style.background="";},2000);
+}
+// Add Contact
+function showAC(){document.getElementById("acOv").classList.add("show");document.getElementById("acDrw").classList.add("show");document.getElementById("acFn").focus();}
+function closeAC(){
+  document.getElementById("acOv").classList.remove("show");document.getElementById("acDrw").classList.remove("show");
+  ["acFn","acLn","acPh","acEm","acTi","acCo","acAd","acNt"].forEach(id=>document.getElementById(id).value="");
+}
+function saveAC(){
+  const fn=document.getElementById("acFn").value.trim(),ln=document.getElementById("acLn").value.trim();
+  if(!fn&&!ln){alert("Please enter a name.");return;}
+  const b=document.getElementById("acSave");b.textContent="Saving...";b.disabled=true;
+  setTimeout(()=>{
+    const list=document.getElementById("conList"),today="Today";
+    const ic=((fn||ln||"?")[0]).toUpperCase();
+    const ph=document.getElementById("acPh").value,co=document.getElementById("acCo").value;
+    const row=document.createElement("div");row.className="crow";
+    row.innerHTML="<div class=\"cav\">"+ic+"</div><div><div class=\"cn\">"+fn+" "+ln+"</div><div class=\"cm\">"+co+(co&&ph?" · ":"")+ph+"</div></div><div class=\"cd\">"+today+"</div><span style=\"color:var(--text-muted);margin-left:4px\">›</span>";
+    list.insertBefore(row,list.firstChild);
+    const badge=document.getElementById("conBadge");
+    if(badge)badge.textContent=list.querySelectorAll(".crow").length+" contacts";
+    b.textContent="✅ Saved!";b.style.background="#14532d";b.style.color="#4ade80";
+    setTimeout(()=>{closeAC();b.textContent="🐝 Save Contact";b.style.background="";b.style.color="";b.disabled=false;},1500);
+  },700);
+}
+
+// ── IMPORT ─────────────────────────────────────────────────
+let impData=[];
+const CSV_TPL="First Name,Last Name,Phone,Email,Title,Company,Contact Type,Address,Notes\nJohn,Smith,305-555-0101,john@email.com,Realtor,Keller Williams,Real Estate Agent,123 Main St Miami FL,Met at event\nMaria,Garcia,786-555-0102,maria@email.com,MLO,PMF Inc,Mortgage LO,456 Brickell Ave Miami FL,Partner\n";
+function showImp(){document.getElementById("impOv").classList.add("show");document.getElementById("impDrw").classList.add("show");resetImp();}
+function closeImp(){document.getElementById("impOv").classList.remove("show");document.getElementById("impDrw").classList.remove("show");}
+function dlTemplate(){
+  const blob=new Blob([CSV_TPL],{type:"text/csv"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=url;a.download="HiveFlow_Contact_Import_Template.csv";a.click();URL.revokeObjectURL(url);
+}
+function impDO(e){e.preventDefault();document.getElementById("impDrop").classList.add("drag");}
+function impDD(e){e.preventDefault();document.getElementById("impDrop").classList.remove("drag");const f=e.dataTransfer.files[0];if(f)parseCSV(f);}
+function onImpFile(e){const f=e.target.files[0];if(f)parseCSV(f);}
+function parseCSVLine(l){const r=[];let c="",q=false;for(const ch of l){if(ch==='"'&&!q){q=true;}else if(ch==='"'&&q){q=false;}else if(ch===","&&!q){r.push(c.trim());c="";}else c+=ch;}r.push(c.trim());return r;}
+function parseCSV(file){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const lines=e.target.result.split(/\r?\n/).filter(l=>l.trim());
+    if(lines.length<2){alert("File looks empty. Use the template.");return;}
+    const hdrs=lines[0].split(",").map(h=>h.trim().toLowerCase().replace(/ /g,"_"));
+    impData=[];
+    for(let i=1;i<lines.length;i++){
+      const vals=parseCSVLine(lines[i]);
+      if(!vals.some(v=>v.trim()))continue;
+      const o={};hdrs.forEach((h,j)=>o[h]=(vals[j]||"").trim());
+      const c={first_name:o.first_name||"",last_name:o.last_name||"",phone:o.phone||"",email:o.email||"",company:o.company||"",title:o.title||"",contact_type:o.contact_type||"Other",address:o.address||"",notes:o.notes||""};
+      if(c.first_name||c.last_name)impData.push(c);
+    }
+    showImpPreview();
+  };reader.readAsText(file);
+}
+function showImpPreview(){
+  document.getElementById("imp1").style.display="none";document.getElementById("imp2").style.display="block";
+  document.getElementById("impCnt").textContent=impData.length+" contacts ready to import";
+  const cur=document.querySelectorAll("#conList .crow").length,tot=cur+impData.length;
+  const w=document.getElementById("impWarn"),b=document.getElementById("impConf");
+  if(tot>500){w.style.display="block";w.textContent="Importing "+impData.length+" contacts would bring you to "+tot+", exceeding the 500-contact Starter limit. Upgrade to Hive Mind for unlimited contacts.";b.disabled=true;b.textContent="Upgrade to Import All";}
+  else{w.style.display="none";b.disabled=false;b.textContent="🐝 Import "+impData.length+" Contact"+(impData.length!==1?"s":"");document.getElementById("impLim").textContent=tot+" of 500 contacts after import";}
+  const prev=impData.slice(0,5);
+  document.getElementById("impPrev").innerHTML="<table style=\"width:100%;border-collapse:collapse;font-size:12px\"><thead><tr style=\"background:var(--surface);border-bottom:1px solid var(--border)\"><th style=\"padding:7px 11px;text-align:left;color:var(--text-muted);font-size:10px;letter-spacing:0.06em;text-transform:uppercase\">Name</th><th style=\"padding:7px 11px;text-align:left;color:var(--text-muted);font-size:10px;letter-spacing:0.06em;text-transform:uppercase\">Phone</th><th style=\"padding:7px 11px;text-align:left;color:var(--text-muted);font-size:10px;letter-spacing:0.06em;text-transform:uppercase\">Company</th></tr></thead><tbody>"+prev.map(c=>"<tr style=\"border-bottom:1px solid var(--border)\"><td style=\"padding:7px 11px;color:var(--text)\">"+c.first_name+" "+c.last_name+"</td><td style=\"padding:7px 11px;color:var(--text-dim)\">"+(c.phone||"—")+"</td><td style=\"padding:7px 11px;color:var(--text-dim)\">"+(c.company||"—")+"</td></tr>").join("")+(impData.length>5?"<tr><td colspan=\"3\" style=\"padding:7px 11px;color:var(--text-muted);font-style:italic;text-align:center\">+ "+(impData.length-5)+" more...</td></tr>":"")+"</tbody></table>";
+}
+async function doImport(){
+  const b=document.getElementById("impConf");b.disabled=true;
+  document.getElementById("impProg").style.display="block";
+  const bar=document.getElementById("impPBar"),txt=document.getElementById("impPTxt");
+  let done=0;
+  for(const c of impData){
+    await new Promise(r=>setTimeout(r,25));done++;
+    bar.style.width=Math.round((done/impData.length)*100)+"%";
+    txt.textContent="Importing "+done+" of "+impData.length+"...";
+    const list=document.getElementById("conList");
+    const ic=((c.first_name||c.last_name||"?")[0]).toUpperCase();
+    const row=document.createElement("div");row.className="crow";
+    row.innerHTML="<div class=\"cav\">"+ic+"</div><div><div class=\"cn\">"+c.first_name+" "+c.last_name+"</div><div class=\"cm\">"+(c.company||"")+((c.company&&c.phone)?" · ":"")+(c.phone||"")+"</div></div><div class=\"cd\">Today</div><span style=\"color:var(--text-muted);margin-left:4px\">›</span>";
+    list.appendChild(row);
+  }
+  const badge=document.getElementById("conBadge");if(badge){badge.textContent=document.querySelectorAll("#conList .crow").length+" contacts";}
+  document.getElementById("imp2").style.display="none";document.getElementById("imp3").style.display="block";
+  document.getElementById("imp3T").textContent=impData.length+" Contacts Imported!";
+  document.getElementById("imp3M").textContent="All "+impData.length+" contacts are now in your HiveFlow CRM.";
+  confetti();
+}
+function resetImp(){impData=[];document.getElementById("imp1").style.display="block";document.getElementById("imp2").style.display="none";document.getElementById("imp3").style.display="none";document.getElementById("impProg").style.display="none";document.getElementById("impPBar").style.width="0%";document.getElementById("impFile").value="";}
+
+// ── REFER ──────────────────────────────────────────────────
+function copyRef(){
+  const link=document.getElementById("refLink").value;
+  navigator.clipboard.writeText(link).then(()=>{
+    const b=document.getElementById("refCopyBtn");b.textContent="✅ Copied!";b.style.background="#14532d";b.style.color="#4ade80";
+    setTimeout(()=>{b.textContent="📋 Copy";b.style.background="";b.style.color="";},2500);
+  });
+}
+function refText(){const l=encodeURIComponent(document.getElementById("refLink").value);window.open("sms:?body=Hey! I use HiveFlow for managing contacts and networking — its incredible. Sign up with my link and we both get a free month! "+l,"_blank");}
+function refEmail(){const l=document.getElementById("refLink").value,s=encodeURIComponent("You need to try HiveFlow"),b=encodeURIComponent("Hey!
+
+I have been using HiveFlow for my business and it is a game changer. Sign up with my link and we both get a free month:
+"+l+"
+
+Ronald");window.open("https://mail.google.com/mail/?view=cm&su="+s+"&body="+b,"_blank");}
+function refWA(){const l=encodeURIComponent("Hey! You need to try HiveFlow — scans business cards, writes emails and texts, organizes contacts. Sign up with my link and we both get a free month! "+document.getElementById("refLink").value);window.open("https://wa.me/?text="+l,"_blank");}
+function showQR(){
+  const link=document.getElementById("refLink").value;
+  document.getElementById("qrImg").src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&data="+encodeURIComponent(link)+"&bgcolor=ffffff&color=000000&margin=0";
+  document.getElementById("qrCard").style.display="block";
+  document.getElementById("qrCard").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function dlQR(){const l=document.getElementById("refLink").value,a=document.createElement("a");a.href="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data="+encodeURIComponent(l)+"&bgcolor=ffffff";a.download="hiveflo-referral-qr.png";a.target="_blank";a.click();}
+
+// ── SETTINGS ───────────────────────────────────────────────
+function copyAPI(){
+  navigator.clipboard.writeText(document.getElementById("apiKey").value).then(()=>{
+    const b=document.getElementById("apibtn");b.textContent="✅ Copied!";b.style.background="#14532d";b.style.color="#4ade80";
+    setTimeout(()=>{b.textContent="📋 Copy";b.style.background="";b.style.color="";},2500);
+  });
+}
+function regenAPI(){
+  if(!confirm("Regenerate? Your old key will stop working immediately."))return;
+  const chars="abcdefghijklmnopqrstuvwxyz0123456789";
+  document.getElementById("apiKey").value="hf_live_"+Array.from({length:32},()=>chars[Math.floor(Math.random()*chars.length)]).join("");
+}
+
+// ── BEE AI ─────────────────────────────────────────────────
+let beeOpen=false;
+function openBee(){beeOpen=true;document.getElementById("wbPanel").classList.add("show");}
+function toggleBee(){beeOpen=!beeOpen;document.getElementById("wbPanel").classList.toggle("show",beeOpen);}
+function beeForC(type){
+  closeC();openBee();
+  const msgs=document.getElementById("wbMsgs");msgs.innerHTML="";
+  document.getElementById("wbSugg").style.display="none";
+  const fn=cC?cC.n.split(" ")[0]:"your contact";
+  addBot("Got it! I can write a "+(type==="email"?"personalized email":"text message")+" for "+fn+". What is the vibe? 🐝");
+  const opts=document.createElement("div");opts.style.cssText="display:flex;flex-wrap:wrap;gap:5px;padding:0 0 7px 0";
+  const options=type==="email"?["Follow-up from meeting","Check in message","Ask for buyer referrals","Introduce myself"]:["Quick follow-up text","Check in text","Referral ask text","Thank you text"];
+  options.forEach(opt=>{
+    const b=document.createElement("button");b.className="wbs";b.textContent=opt;
+    b.onclick=()=>{opts.remove();wbGenForC(opt,type);};opts.appendChild(b);
+  });
+  msgs.appendChild(opts);msgs.scrollTop=msgs.scrollHeight;
+}
+function wbGenForC(prompt,type){
+  if(!cC)return;
+  const msgs=document.getElementById("wbMsgs");
+  const ue=document.createElement("div");ue.className="msg usr";ue.textContent=prompt;msgs.appendChild(ue);
+  const typ=document.createElement("div");typ.className="typ";typ.innerHTML="<div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div>";msgs.appendChild(typ);msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{
+    typ.remove();
+    const fn=cC.n.split(" ")[0],co=cC.co||"";
+    let generated="";
+    if(type==="email"){
+      generated="Subject: Great connecting with you, "+fn+"!
+
+Hi "+fn+",
+
+It was so great meeting you today! "+(co?"I know the team at "+co+" works with incredible clients — ":"")+"I would love to be your go-to mortgage lender.
+
+I specialize in fast closings (avg. 14 days CTC), conventional, FHA, VA, and jumbo loans.
+
+Ronald Cepeda | MLO NMLS #407464
+📞 305-785-3915";
+    } else {
+      generated="Hey "+fn+"! Ronald Cepeda here 🐝 "+(co?"— great meeting you at "+co+". ":"— great meeting you! ")+"Would love to be your go-to lender. Fast closings, great rates! 📞 305-785-3915";
+    }
+    addBot(generated);
+    const sr=document.createElement("div");sr.style.cssText="display:flex;gap:5px;padding:0 0 7px 0";
+    if(type==="email"){
+      const gb=document.createElement("button");gb.className="wbs";gb.style.background="var(--gold-dim)";gb.textContent="✉️ Open in Gmail";
+      gb.onclick=()=>{const lines=generated.split("\n"),subj=encodeURIComponent(lines[0].replace("Subject: ","")),body=encodeURIComponent(lines.slice(2).join("\n")),to=encodeURIComponent(cC.em||"");window.open("https://mail.google.com/mail/?view=cm&to="+to+"&su="+subj+"&body="+body,"_blank");};
+      sr.appendChild(gb);
+    } else {
+      const sb=document.createElement("button");sb.className="wbs";sb.style.background="var(--gold-dim)";sb.textContent="💬 Open in Messages";
+      sb.onclick=()=>{window.open("sms:"+(cC.ph||"").replace(/\D/g,"")+"?body="+encodeURIComponent(generated),"_blank");};
+      sr.appendChild(sb);
+      const cb=document.createElement("button");cb.className="wbs";cb.textContent="📋 Copy";
+      cb.onclick=()=>{navigator.clipboard.writeText(generated).then(()=>{cb.textContent="✅ Copied!";setTimeout(()=>cb.textContent="📋 Copy",2000);});};
+      sr.appendChild(cb);
+    }
+    msgs.appendChild(sr);msgs.scrollTop=msgs.scrollHeight;
+  },1300);
+}
+
+function callBeeAPI(messages, typEl, contactName, contactCompany){
+  fetch('/api/chat',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      messages: messages,
+      profession: beeProfession,
+      userName: beeUserName,
+      contactName: contactName,
+      contactCompany: contactCompany
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    if(typEl)typEl.remove();
+    var reply = data.response || data.error || 'Something went wrong. Try again.';
+    beeHistory.push({role:'assistant',content:reply});
+    addBot(reply);
+  })
+  .catch(function(err){
+    if(typEl)typEl.remove();
+    // Fallback to mock if API not available (local testing)
+    console.warn('Bee API unavailable, using mock:', err);
+    var l=(messages[messages.length-1]||{}).content||'';l=l.toLowerCase();
+    var r;
+    if(l.indexOf("fha")>=0)r="FHA docs checklist:\n\nW2s: 2 years\nPaystubs: 30 days\nBank statements: 2 months\nPhoto ID\nMin credit: 580 for 3.5% down\nAll monthly debts\n\nMin down: 3.5% with 580+ score";
+    else if(l.indexOf("realtor")>=0||l.indexOf("text")>=0)r="Hey [Name]! Ronald Cepeda here — mortgage broker specializing in fast closings. I average 14 days CTC. Would love to be your go-to lender. Coffee this week? 305-785-3915";
+    else r="I can help with follow-up emails, text templates, mortgage checklists, buyer qualification, and loan program comparisons. Ask me something specific!";
+    beeHistory.push({role:'assistant',content:r});
+    addBot(r);
+  });
+}
+
+function addBot(text){const msgs=document.getElementById("wbMsgs"),e=document.createElement("div");e.className="msg bot";e.textContent=text;msgs.appendChild(e);msgs.scrollTop=msgs.scrollHeight;}
+function wbQ(text){document.getElementById("wbIn").value=text;wbSend();}
+function wbSend(){
+  const inp=document.getElementById("wbIn"),text=inp.value.trim();if(!text)return;
+  const msgs=document.getElementById("wbMsgs");
+  const ue=document.createElement("div");ue.className="msg usr";ue.textContent=text;msgs.appendChild(ue);
+  inp.value="";document.getElementById("wbSugg").style.display="none";
+  const typ=document.createElement("div");typ.className="typ";typ.innerHTML="<div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div>";msgs.appendChild(typ);msgs.scrollTop=msgs.scrollHeight;
+  setTimeout(()=>{
+    typ.remove();
+    const l=text.toLowerCase();let r;
+    if(l.includes("christy")||l.includes("follow-up")||l.includes("followup"))r="Subject: Great connecting today, Christy!\n\nHi Christy,\n\nSo great meeting you! I know luxury buyers need seamless financing — I specialize in jumbo and creative solutions with a 14-day avg CTC.\n\nLet us connect soon!\n\nRonald Cepeda | NMLS #407464\n📞 305-785-3915";
+    else if(l.includes("fha"))r="FHA docs checklist:\n\n📋 W2s: 2 years\n📋 Paystubs: 30 days\n📋 Bank statements: 2 months\n📋 Photo ID\n📋 Min credit: 580 for 3.5% down\n📋 All monthly debts\n\nMin down: 3.5% with 580+ score";
+    else if(l.includes("realtor")||l.includes("text"))r="Hey [Name]! Ronald Cepeda here — mortgage broker specializing in fast closings. I average 14 days CTC and keep deals together. Would love to be your go-to lender. Coffee this week? 📞 305-785-3915";
+    else r="Great question! I can help with:\n\n✉️ Follow-up emails for any contact\n💬 Text message templates\n📋 Mortgage doc checklists\n🏠 Buyer qualification guidance\n📊 Loan program comparisons\n\nTry asking me something specific like \"draft a follow-up for Karen\" or \"what is the DTI limit for conventional?\"";
+    addBot(r);
+  },1200);
+}
+
+// ── CONFETTI ───────────────────────────────────────────────
+// ── BILLING ──────────────────────────────────────────────
+function openBillingPortal(){
+  // In production: call Stripe API to generate portal URL then redirect
+  // For now: show confirmation and simulate
+  var btn = event.target;
+  btn.innerHTML = '<span class="spin"></span> Opening...';
+  btn.disabled = true;
+  setTimeout(function(){
+    // Production: window.location.href = stripePortalUrl;
+    alert('Stripe Billing Portal would open here.\n\nIn production this redirects to your secure Stripe portal where you can:\n\n• Update credit card\n• View invoices\n• Change or cancel plan');
+    btn.innerHTML = '💳 Update Payment Method';
+    btn.disabled = false;
+  }, 1200);
+}
+
+// ── TEAM MANAGEMENT ──────────────────────────────────────
+var inviteSlot = 1;
+var teamMembers = {1: null, 2: null};
+
+function showInvite(slot){
+  inviteSlot = slot;
+  document.getElementById('inviteModal').style.display = 'block';
+  document.getElementById('inviteModal').scrollIntoView({behavior:'smooth', block:'nearest'});
+  document.getElementById('inviteName').value = '';
+  document.getElementById('inviteEmail').value = '';
+  document.getElementById('inviteName').focus();
+}
+function hideInvite(){
+  document.getElementById('inviteModal').style.display = 'none';
+}
+function sendInvite(){
+  var name = document.getElementById('inviteName').value.trim();
+  var email = document.getElementById('inviteEmail').value.trim();
+  if(!name){alert('Please enter their name.');return;}
+  if(!email||!email.includes('@')){alert('Please enter a valid email.');return;}
+  var btn = document.getElementById('sendInviteBtn');
+  btn.innerHTML = '<span class="spin"></span> Sending...';
+  btn.disabled = true;
+  setTimeout(function(){
+    // In production: send invite via Supabase + email
+    teamMembers[inviteSlot] = {name: name, email: email, status: 'pending'};
+    var slot = document.getElementById('slot'+inviteSlot);
+    var init = name[0].toUpperCase();
+    slot.innerHTML = '<div class="team-av" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">'+init+'</div>' +
+      '<div class="team-info"><div class="team-name">'+name+'</div><div class="team-role">'+email+' · Invite sent</div></div>' +
+      '<div class="team-badge" style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.3);color:#a5b4fc;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px">⏳ Pending</div>';
+    hideInvite();
+    btn.innerHTML = '🐝 Send Invite';
+    btn.disabled = false;
+    // Confetti for team invite!
+    confetti();
+    setTimeout(function(){
+      alert('Invite sent to '+name+'! They will receive an email to join your Hive. Once they sign up, they will share your CRM automatically.');
+    }, 500);
+  }, 1000);
+}
+function addExtraSeat(){
+  alert('Extra Seat — $10/month\n\nThis would open Stripe checkout to add an additional team member seat to your Hive Mind plan.\n\nEach extra seat gets their own login and full access to your shared CRM.');
+}
+
+function resetForDemo(){
+  if(!confirm('Reset to demo state? This will clear the scan count and contact list for a clean demo.')) return;
+  // Reset scan count
+  document.getElementById('stScans').textContent = '0';
+  document.getElementById('stCon').textContent = '0';
+  document.getElementById('stTod').textContent = '0';
+  updateTierUI(0);
+  // Clear contact list
+  var list = document.getElementById('conList');
+  if(list) list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">No contacts yet — scan a card to get started!</div>';
+  var badge = document.getElementById('conBadge');
+  if(badge) badge.textContent = '0 contacts';
+  // Reset scan panel
+  resetScan();
+  // Switch to scan panel
+  P('scan', document.querySelector('.ni'));
+  alert('Done! Dashboard is reset for demo. Go show them what HiveFlow can do! 🐝');
+}
+
+function confetti(){
+  const cols=["#c9a84c","#f0c060","#ffffff","#4ade80","#a78bfa"];
+  for(let i=0;i<55;i++){
+    const el=document.createElement("div");el.className="cp";
+    el.style.cssText="left:"+Math.random()*100+"%;background:"+cols[Math.floor(Math.random()*cols.length)]+";animation-duration:"+(1.5+Math.random()*2)+"s;animation-delay:"+(Math.random()*0.5)+"s;width:"+(6+Math.random()*6)+"px;height:"+(6+Math.random()*6)+"px;border-radius:"+(Math.random()>.5?"50%":"2px")+";";
+    document.body.appendChild(el);setTimeout(()=>el.remove(),4000);
+  }
+}
+
+// ── CLOSE SIDEBAR ON OUTSIDE CLICK ────────────────────────
+document.addEventListener("click",e=>{
+  const sb=document.getElementById("sidebar");
+  if(sb.classList.contains("open")&&!sb.contains(e.target)&&!e.target.closest(".icnbtn"))sb.classList.remove("open");
+});
+</script>
+</body>
+</html>

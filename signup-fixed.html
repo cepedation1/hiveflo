@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HiveFlow — Join the Hive</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --gold:#c9a84c;--gold-light:#f0c060;--gold-dim:rgba(201,168,76,0.15);--gold-border:rgba(201,168,76,0.3);
+  --bg:#080810;--surface:#0f0f1c;--surface2:#141426;--border:#1e1e35;
+  --text:#ffffff;--text-dim:#f0ede8;--text-muted:#8890a8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -5%,rgba(201,168,76,0.08) 0%,transparent 70%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='52' viewBox='0 0 60 52'%3E%3Cpolygon points='30,1 59,16 59,46 30,61 1,46 1,16' fill='none' stroke='rgba(201,168,76,0.04)' stroke-width='1'/%3E%3C/svg%3E");background-size:60px 52px;pointer-events:none;z-index:0;}
+.container{position:relative;z-index:1;width:100%;max-width:520px;}
+
+/* LOGO */
+.logo{text-align:center;margin-bottom:28px;animation:fadeDown 0.5s ease forwards;}
+.logo-word{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:600;letter-spacing:0.04em;}
+.logo-hive{color:var(--gold);}.logo-flo{color:var(--text);font-style:italic;}
+.logo-tag{font-size:11px;color:var(--text-muted);letter-spacing:0.15em;text-transform:uppercase;margin-top:4px;}
+
+/* PROGRESS BAR */
+.progress{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:28px;}
+.progress-step{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:var(--text-muted);transition:color 0.3s;}
+.progress-step.active{color:var(--gold);}
+.progress-step.done{color:var(--gold);opacity:0.6;}
+.progress-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;transition:all 0.3s;background:var(--surface2);}
+.progress-step.active .progress-dot{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.progress-step.done .progress-dot{border-color:var(--gold);background:var(--gold);color:#080810;}
+.progress-line{width:40px;height:1px;background:var(--border);margin:0 4px;transition:background 0.3s;}
+.progress-line.done{background:var(--gold);opacity:0.5;}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:32px;box-shadow:0 40px 80px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);animation:fadeUp 0.5s ease 0.1s forwards;opacity:0;}
+.step{display:none;}.step.active{display:block;}
+
+/* STEP 1 - PROFESSION */
+.step-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--text);margin-bottom:6px;text-align:center;}
+.step-sub{font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:24px;line-height:1.5;}
+.profession-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.prof-card{border:2px solid var(--border);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all 0.2s;background:var(--surface2);text-align:center;position:relative;}
+.prof-card:hover{border-color:var(--gold-border);background:var(--gold-dim);}
+.prof-card.selected{border-color:var(--gold);background:var(--gold-dim);}
+.prof-card.selected::after{content:'✓';position:absolute;top:8px;right:10px;font-size:12px;font-weight:700;color:var(--gold);}
+.prof-icon{font-size:28px;margin-bottom:8px;display:block;}
+.prof-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.prof-desc{font-size:11px;color:var(--text-muted);line-height:1.4;}
+
+/* STEP 2 - ACCOUNT + PLAN */
+.tabs{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:24px;}
+.tab{flex:1;padding:9px;border-radius:7px;border:none;background:transparent;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+.tab.active{background:var(--gold);color:#080810;font-weight:600;}
+.form-group{margin-bottom:14px;}
+label{display:block;font-size:11px;font-weight:600;color:var(--text);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:5px;}
+input[type="email"],input[type="password"],input[type="text"]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:all 0.2s;}
+input:focus{border-color:var(--gold-border);box-shadow:0 0 0 3px rgba(201,168,76,0.08);}
+input::placeholder{color:var(--text-muted);}
+
+/* PLAN SELECTOR */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.plan{border:2px solid var(--border);border-radius:12px;padding:14px 12px;cursor:pointer;transition:all 0.2s;position:relative;background:var(--surface2);}
+.plan.selected{border-color:var(--gold);background:var(--gold-dim);}
+.plan input[type="radio"]{display:none;}
+.plan-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.plan-price{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);line-height:1;}
+.plan-period{font-size:11px;color:var(--text-muted);}
+.plan-features{margin-top:8px;font-size:11px;color:var(--text-dim);line-height:1.6;}
+.plan-badge{position:absolute;top:-8px;right:8px;background:var(--gold);color:#080810;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;text-transform:uppercase;}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:16px 0;color:var(--text);font-size:12px;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* PROFESSION BADGE (shown on step 2) */
+.prof-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:20px;padding:6px 14px;font-size:13px;font-weight:600;color:var(--gold);margin-bottom:20px;}
+.prof-badge button{background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:11px;padding:0;margin-left:4px;text-decoration:underline;}
+
+/* BUTTONS */
+.btn-primary{width:100%;padding:15px;background:var(--gold);border:none;border-radius:10px;color:#080810;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-primary:hover{background:var(--gold-light);transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,168,76,0.3);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.btn-back{width:100%;padding:12px;background:transparent;border:1px solid var(--border);border-radius:10px;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s;margin-top:10px;}
+.btn-back:hover{border-color:var(--gold-border);color:var(--text);}
+
+/* ALERT */
+.alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none;line-height:1.5;}
+.alert.error{background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#f87171;}
+.alert.success{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);color:#4ade80;}
+.alert.show{display:block;}
+
+/* SUCCESS */
+.success-screen{display:none;text-align:center;padding:20px 0;}
+.success-screen.show{display:block;}
+.success-icon{font-size:56px;margin-bottom:14px;}
+.success-title{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--gold);margin-bottom:8px;}
+.success-sub{font-size:14px;color:var(--text-dim);line-height:1.6;margin-bottom:24px;}
+
+/* TERMS */
+.terms{font-size:11px;color:var(--text-muted);text-align:center;margin-top:12px;line-height:1.5;}
+.terms a{color:var(--gold);text-decoration:none;}
+
+/* LOGIN FORGOT */
+.forgot{text-align:right;margin-top:-6px;margin-bottom:14px;}
+.forgot a{font-size:12px;color:var(--text-muted);text-decoration:none;}
+.forgot a:hover{color:var(--gold);}
+
+/* FOOTER */
+.footer-note{text-align:center;font-size:12px;color:var(--text-muted);margin-top:18px;line-height:1.6;}
+.footer-note a{color:var(--gold);text-decoration:none;}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes spin{to{transform:rotate(360deg);}}
+.spinner{width:16px;height:16px;border:2px solid rgba(8,8,16,0.3);border-top-color:#080810;border-radius:50%;animation:spin 0.7s linear infinite;display:inline-block;}
+@media(max-width:480px){.card{padding:24px 18px;}.profession-grid{grid-template-columns:1fr 1fr;gap:8px;}.prof-card{padding:12px 8px;}.plans{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Logo -->
+  <div class="logo">
+    <div class="logo-word"><span class="logo-hive">Hive</span><span class="logo-flo">flo</span></div>
+    <div class="logo-tag">From notes to close — faster</div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress" id="progressBar">
+    <div class="progress-step active" id="prog1">
+      <div class="progress-dot">1</div>
+      <span>Your Role</span>
+    </div>
+    <div class="progress-line" id="progLine1"></div>
+    <div class="progress-step" id="prog2">
+      <div class="progress-dot">2</div>
+      <span>Your Account</span>
+    </div>
+  </div>
+
+  <!-- Card -->
+  <div class="card" id="mainCard">
+
+    <div class="alert" id="alert"></div>
+
+    <!-- SUCCESS SCREEN -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🐝</div>
+      <div class="success-title">Welcome to the Hive!</div>
+      <div class="success-sub">Your account is set up. Redirecting to your personalized dashboard...</div>
+      <button class="btn-primary" onclick="window.location.href='dashboard.html'">Enter Dashboard →</button>
+    </div>
+
+    <!-- ── STEP 1: PROFESSION ── -->
+    <div class="step active" id="step1">
+      <div class="step-title">What do you do? 🐝</div>
+      <div class="step-sub">HiveFlow personalizes your experience based on your role — your Bee AI, email templates, and contact tools all adapt to how you work.</div>
+
+      <div class="profession-grid">
+        <div class="prof-card" onclick="selectProfession('realtor', this)">
+          <span class="prof-icon">🏡</span>
+          <div class="prof-name">Realtor / Agent</div>
+          <div class="prof-desc">Buyers, sellers, listings & referrals</div>
+        </div>
+        <div class="prof-card" onclick="selectProfession('mlo', this)">
+          <span class="prof-icon">🏦</span>
+          <div class="prof-name">Mortgage LO</div>
+          <div class="prof-desc">Pipeline, pre-approvals & borrower leads</div>
+        </div>
+        <div class="prof-card" onclick="selectProfession('title', this)">
+          <span class="prof-icon">📋</span>
+          <div class="prof-name">Title Agent</div>
+          <div class="prof-desc">Closings, escrow & title searches</div>
+        </div>
+        <div class="prof-card" onclick="selectProfession('attorney', this)">
+          <span class="prof-icon">⚖️</span>
+          <div class="prof-name">Attorney</div>
+          <div class="prof-desc">Real estate law, contracts & disputes</div>
+        </div>
+        <div class="prof-card" onclick="selectProfession('insurance', this)">
+          <span class="prof-icon">🛡️</span>
+          <div class="prof-name">Insurance Agent</div>
+          <div class="prof-desc">Homeowners, policies & coverage</div>
+        </div>
+        <div class="prof-card" onclick="selectProfession('other', this)" style="grid-column:span 2;">
+          <span class="prof-icon">💼</span>
+          <div class="prof-name">Other Professional</div>
+          <div class="prof-desc">Any industry — networking, sales, consulting & more</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="nextBtn" onclick="goToStep2()" disabled>Continue →</button>
+    </div>
+
+    <!-- ── STEP 2: ACCOUNT + PLAN ── -->
+    <div class="step" id="step2">
+
+      <!-- Profession badge -->
+      <div style="text-align:center;margin-bottom:20px;">
+        <div class="prof-badge" id="profBadge">
+          <span id="profBadgeIcon">🏡</span>
+          <span id="profBadgeText">Realtor / Agent</span>
+          <button onclick="goBackToStep1()">Change</button>
+        </div>
+      </div>
+
+      <!-- Auth tabs -->
+      <div class="tabs" id="authTabs">
+        <button class="tab active" onclick="switchTab('signup')">Create Account</button>
+        <button class="tab" onclick="switchTab('login')">Sign In</button>
+      </div>
+
+      <!-- SIGNUP FORM -->
+      <div id="signupForm">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="signup-name" placeholder="Your full name" autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="signup-email" placeholder="you@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="signup-password" placeholder="8+ characters" autocomplete="new-password">
+        </div>
+
+        <div class="divider">Choose your plan</div>
+
+        <div class="plans">
+          <label class="plan selected" id="plan-starter" onclick="selectPlan('starter')">
+            <input type="radio" name="plan" value="starter" checked>
+            <div class="plan-name">Starter</div>
+            <div class="plan-price">$7</div>
+            <div class="plan-period">/month</div>
+            <div class="plan-features">Unlimited scans · AI extraction · Email + Text · 500 contacts · CRM hub</div>
+          </label>
+          <label class="plan" id="plan-hivemind" onclick="selectPlan('hivemind')">
+            <div class="plan-badge">Most Popular</div>
+            <input type="radio" name="plan" value="hivemind">
+            <div class="plan-name">Pro</div>
+            <div class="plan-price">$15</div>
+            <div class="plan-period">/month</div>
+            <div class="plan-features">Everything + Team CRM · Unlimited contacts · Pipeline · Priority support</div>
+          </label>
+        </div>
+
+        <button class="btn-primary" id="signupBtn" onclick="handleSignup()">🐝 Join the Hive</button>
+        <button class="btn-back" onclick="goBackToStep1()">← Back</button>
+        <div class="terms">By signing up you agree to our <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a>. Cancel anytime.</div>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="loginForm" style="display:none;">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" placeholder="you@email.com" autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="Your password" autocomplete="current-password">
+        </div>
+        <div class="forgot"><a href="#" onclick="handleForgot()">Forgot password?</a></div>
+        <button class="btn-primary" id="loginBtn" onclick="handleLogin()">Sign In →</button>
+        <div class="terms" style="margin-top:12px;">No account? <a href="#" onclick="switchTab('signup')">Sign up</a></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-note" id="footerNote">
+    🔒 Secured by Supabase · Payments by Stripe<br>
+    <a href="index.html">← Back to hiveflo.app</a>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ──────────────────────────────────────────────
+const SUPABASE_URL='https://bwxjoicwmouiucetntqf.supabase.co';
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3eGpvaWN3bW91aXVjZXRudHFmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTkzNzQsImV4cCI6MjA5NTY5NTM3NH0.ENirH96Hy4D9qBzYMLzp9QlOJ0Q2RfsrCe_vOAFwOfo';
+const STRIPE_PK='pk_test_51TcMsdAMXqL36TKMVNGTrkpbZZzQ0hQWYsM5yJHr6WN9zrT8fYvKZQe5DBO8QB8gwMubSk8n6dAuRIdeDXtwjVKZ00jWkVP40S';
+const PRICE_IDS={starter:'price_1TcnX0AMXqL36TKMJ5wdU2vL',hivemind:'price_1TcnXlAMXqL36TKMqiyVChBD'};
+const PROFESSIONS={
+  realtor:{icon:'🏡',name:'Realtor / Agent'},
+  mlo:{icon:'🏦',name:'Mortgage LO'},
+  title:{icon:'📋',name:'Title Agent'},
+  attorney:{icon:'⚖️',name:'Attorney'},
+  insurance:{icon:'🛡️',name:'Insurance Agent'},other:{icon:'💼',name:'Other Professional'}
+};
+const{createClient}=supabase;
+const sb=createClient(SUPABASE_URL,SUPABASE_KEY);
+const stripe=Stripe(STRIPE_PK);
+let selectedProfession=null;
+let selectedPlan='starter';
+
+// ─── CHECK EXISTING SESSION ───────────────────────────────
+(async()=>{
+  const{data:{session}}=await sb.auth.getSession();
+  if(session)window.location.href='dashboard.html';
+})();
+
+// ─── STEP 1: PROFESSION ──────────────────────────────────
+function selectProfession(prof, el){
+  document.querySelectorAll('.prof-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedProfession=prof;
+  document.getElementById('nextBtn').disabled=false;
+}
+
+function goToStep2(){
+  if(!selectedProfession)return;
+  // Update badge
+  const p=PROFESSIONS[selectedProfession];
+  document.getElementById('profBadgeIcon').textContent=p.icon;
+  document.getElementById('profBadgeText').textContent=p.name;
+  // Update progress
+  document.getElementById('prog1').classList.remove('active');
+  document.getElementById('prog1').classList.add('done');
+  document.getElementById('prog1').querySelector('.progress-dot').textContent='✓';
+  document.getElementById('progLine1').classList.add('done');
+  document.getElementById('prog2').classList.add('active');
+  // Switch step
+  document.getElementById('step1').classList.remove('active');
+  document.getElementById('step2').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goBackToStep1(){
+  document.getElementById('prog1').classList.add('active');
+  document.getElementById('prog1').classList.remove('done');
+  document.getElementById('prog1').querySelector('.progress-dot').textContent='1';
+  document.getElementById('progLine1').classList.remove('done');
+  document.getElementById('prog2').classList.remove('active');
+  document.getElementById('step2').classList.remove('active');
+  document.getElementById('step1').classList.add('active');
+  hideAlert();
+}
+
+// ─── TABS ─────────────────────────────────────────────────
+function switchTab(tab){
+  document.getElementById('signupForm').style.display=tab==='signup'?'block':'none';
+  document.getElementById('loginForm').style.display=tab==='login'?'block':'none';
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',(tab==='signup'&&i===0)||(tab==='login'&&i===1)));
+  hideAlert();
+}
+
+// ─── PLAN ─────────────────────────────────────────────────
+function selectPlan(plan){
+  selectedPlan=plan;
+  document.getElementById('plan-starter').classList.toggle('selected',plan==='starter');
+  document.getElementById('plan-hivemind').classList.toggle('selected',plan==='hivemind');
+}
+
+// ─── SIGNUP ───────────────────────────────────────────────
+async function handleSignup(){
+  const name=document.getElementById('signup-name').value.trim();
+  const email=document.getElementById('signup-email').value.trim();
+  const password=document.getElementById('signup-password').value;
+  if(!name){showAlert('Please enter your full name.');return;}
+  if(!email){showAlert('Please enter your email address.');return;}
+  if(password.length<8){showAlert('Password must be at least 8 characters.');return;}
+  setLoading('signupBtn',true);
+  hideAlert();
+  try{
+    const{data,error}=await sb.auth.signUp({
+      email,password,
+      options:{data:{full_name:name,plan:selectedPlan,profession:selectedProfession}}
+    });
+    if(error)throw error;
+    // Server-side checkout session (fixes deprecated redirectToCheckout with lineItems)
+    const userId=data?.user?.id||null;
+    const checkoutRes=await fetch('/api/create-checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({plan:selectedPlan,email,userId})
+    });
+    const checkoutData=await checkoutRes.json();
+    if(checkoutData.error)throw new Error(checkoutData.error);
+    window.location.href=checkoutData.url;
+  }catch(err){
+    showAlert(err.message||'Something went wrong. Please try again.');
+    setLoading('signupBtn',false);
+  }
+}
+
+// ─── LOGIN ────────────────────────────────────────────────
+async function handleLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const password=document.getElementById('login-password').value;
+  if(!email||!password){showAlert('Please fill in all fields.');return;}
+  setLoading('loginBtn',true);hideAlert();
+  try{
+    const{data,error}=await sb.auth.signInWithPassword({email,password});
+    if(error)throw error;
+    document.getElementById('authTabs').style.display='none';
+    document.getElementById('loginForm').style.display='none';
+    document.getElementById('successScreen').classList.add('show');
+    document.getElementById('profBadge').style.display='none';
+    document.getElementById('progressBar').style.display='none';
+    document.getElementById('footerNote').style.display='none';
+    setTimeout(()=>window.location.href='dashboard.html',2000);
+  }catch(err){
+    showAlert(err.message||'Invalid email or password.');
+    setLoading('loginBtn',false);
+  }
+}
+
+// ─── FORGOT ───────────────────────────────────────────────
+async function handleForgot(){
+  const email=document.getElementById('login-email').value.trim();
+  if(!email){showAlert('Enter your email address above first.');return;}
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password.html'});
+  if(error)showAlert(error.message);
+  else showAlert('Password reset email sent! Check your inbox.','success');
+}
+
+// ─── CANCELED ─────────────────────────────────────────────
+if(new URLSearchParams(window.location.search).get('canceled')){
+  showAlert('Payment was canceled. Choose a plan to continue.');
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────
+function showAlert(msg,type='error'){
+  const el=document.getElementById('alert');el.textContent=msg;el.className=`alert ${type} show`;
+}
+function hideAlert(){document.getElementById('alert').className='alert';}
+function setLoading(btnId,loading){
+  const btn=document.getElementById(btnId);btn.disabled=loading;
+  btn.innerHTML=loading?'<span class="spinner"></span>':btnId==='signupBtn'?'🐝 Join the Hive':'Sign In →';
+}
+
+// Enter key
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Enter')return;
+  const s2=document.getElementById('step2').classList.contains('active');
+  if(!s2)return;
+  if(document.getElementById('signupForm').style.display!=='none')handleSignup();
+  else handleLogin();
+});
+</script>
+</body>
+</html>
