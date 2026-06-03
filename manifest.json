@@ -1,0 +1,28 @@
+{
+  "name": "HiveFlow",
+  "short_name": "HiveFlow",
+  "description": "AI-powered business card scanner and CRM for real estate professionals",
+  "start_url": "/dashboard.html",
+  "display": "standalone",
+  "background_color": "#080810",
+  "theme_color": "#c9a84c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://api.qrserver.com/v1/create-qr-code/?size=192x192&data=HiveFlow",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://api.qrserver.com/v1/create-qr-code/?size=512x512&data=HiveFlow",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

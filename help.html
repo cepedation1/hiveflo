@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Help Center — HiveFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#08070e;color:#f5f0e8;font-family:"DM Sans",sans-serif;line-height:1.7;}
+nav{padding:20px 40px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(201,147,58,0.15);}
+.logo{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:700;text-decoration:none;}
+.logo span:first-child{color:#c9933a;}.logo span:last-child{color:#f5f0e8;font-style:italic;}
+nav a.back{font-size:13px;color:#c9933a;text-decoration:none;}
+.hero{text-align:center;padding:60px 40px 40px;}
+.hero h1{font-family:"Cormorant Garamond",serif;font-size:48px;font-weight:700;margin-bottom:10px;}
+.hero h1 em{color:#c9933a;font-style:italic;}
+.hero p{font-size:15px;color:#8890a8;max-width:500px;margin:0 auto 32px;}
+.search-bar{max-width:480px;margin:0 auto;position:relative;}
+.search-bar input{width:100%;background:#0f0f1c;border:1px solid #1e1e35;border-radius:12px;padding:14px 20px;color:#f5f0e8;font-family:"DM Sans",sans-serif;font-size:15px;outline:none;}
+.search-bar input:focus{border-color:rgba(201,147,58,0.5);}
+.search-bar input::placeholder{color:#8890a8;}
+.container{max-width:860px;margin:0 auto;padding:20px 40px 80px;}
+.section{margin-bottom:48px;}
+.section-title{font-family:"Syne",sans-serif;font-size:11px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#c9933a;margin-bottom:16px;}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-bottom:32px;}
+.card{background:#0f0f1c;border:1px solid #1e1e35;border-radius:14px;padding:20px;cursor:pointer;transition:all 0.2s;}
+.card:hover{border-color:rgba(201,147,58,0.4);transform:translateY(-2px);}
+.card-icon{font-size:28px;margin-bottom:10px;}
+.card-title{font-size:14px;font-weight:700;color:#f5f0e8;margin-bottom:4px;}
+.card-desc{font-size:12px;color:#8890a8;}
+.faq-item{border-bottom:1px solid #1e1e35;}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:16px 0;cursor:pointer;font-size:15px;font-weight:600;color:#f5f0e8;}
+.faq-q:hover{color:#c9933a;}
+.faq-arrow{transition:transform 0.2s;color:#c9933a;font-size:18px;}
+.faq-a{display:none;padding:0 0 16px;font-size:14px;color:#e8e2d8;line-height:1.7;}
+.faq-a.open{display:block;}
+.faq-arrow.open{transform:rotate(180deg);}
+.guide{background:#0f0f1c;border:1px solid #1e1e35;border-radius:14px;padding:24px;margin-bottom:12px;}
+.guide-num{width:28px;height:28px;border-radius:50%;background:rgba(201,147,58,0.15);border:1px solid rgba(201,147,58,0.3);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#c9933a;margin-right:10px;flex-shrink:0;}
+.guide-title{font-size:15px;font-weight:700;color:#f5f0e8;margin-bottom:6px;display:flex;align-items:center;}
+.guide-body{font-size:13px;color:#8890a8;line-height:1.7;padding-left:38px;}
+.contact-box{background:linear-gradient(135deg,rgba(201,147,58,0.1),rgba(201,147,58,0.03));border:1px solid rgba(201,147,58,0.3);border-radius:16px;padding:32px;text-align:center;margin-top:40px;}
+.contact-box h3{font-family:"Cormorant Garamond",serif;font-size:28px;font-weight:600;margin-bottom:8px;}
+.contact-box p{color:#8890a8;margin-bottom:20px;}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:#c9a84c;color:#08070e;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;transition:all 0.2s;}
+.btn:hover{background:#f0c060;}
+footer{padding:32px 40px;border-top:1px solid rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-size:13px;color:#8890a8;text-decoration:none;}
+.footer-links a:hover{color:#c9933a;}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo"><span>Hive</span><span>flo</span></a>
+  <a href="dashboard.html" class="back">← Back to Dashboard</a>
+</nav>
+
+<div class="hero">
+  <h1>How can we <em>help you?</em></h1>
+  <p>Find answers, guides, and everything you need to get the most out of HiveFlow.</p>
+  <div class="search-bar">
+    <input type="text" placeholder="Search guides and FAQs..." oninput="searchHelp(this.value)">
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- QUICK LINKS -->
+  <div class="section">
+    <div class="section-title">Popular Topics</div>
+    <div class="cards">
+      <div class="card" onclick="scrollTo('guide-scan')"><div class="card-icon">📸</div><div class="card-title">How to Scan a Card</div><div class="card-desc">Upload or use your camera to scan any business card</div></div>
+      <div class="card" onclick="scrollTo('guide-mycard')"><div class="card-icon">📱</div><div class="card-title">My Digital Card</div><div class="card-desc">Set up and share your personal digital business card</div></div>
+      <div class="card" onclick="scrollTo('guide-bee')"><div class="card-icon">🐝</div><div class="card-title">Using Bee AI</div><div class="card-desc">Get AI to write emails and texts for any contact</div></div>
+      <div class="card" onclick="scrollTo('guide-crm')"><div class="card-icon">🔗</div><div class="card-title">CRM Connections</div><div class="card-desc">Connect HiveFlow to Follow Up Boss, HubSpot and more</div></div>
+      <div class="card" onclick="scrollTo('guide-pwa')"><div class="card-icon">📲</div><div class="card-title">Install as App</div><div class="card-desc">Add HiveFlow to your phone or desktop home screen</div></div>
+      <div class="card" onclick="scrollTo('guide-billing')"><div class="card-icon">💳</div><div class="card-title">Billing & Plans</div><div class="card-desc">Manage your subscription, update payment method</div></div>
+    </div>
+  </div>
+
+  <!-- GETTING STARTED GUIDE -->
+  <div class="section" id="guide-scan">
+    <div class="section-title">Getting Started</div>
+
+    <div class="guide">
+      <div class="guide-title"><span class="guide-num">1</span>Scan Your First Business Card</div>
+      <div class="guide-body">Go to the <strong>Scan</strong> tab → tap <strong>Upload Card</strong> → select a photo of a business card from your gallery or take a new one. HiveFlow's AI will extract the name, phone, email, company, and title automatically in seconds. Review the extracted info, make any corrections, then tap <strong>Save to CRM</strong>.</div>
+    </div>
+
+    <div class="guide" id="guide-mycard">
+      <div class="guide-title"><span class="guide-num">2</span>Set Up Your Digital Business Card</div>
+      <div class="guide-body">After your <strong>first scan</strong>, your Digital Business Card unlocks automatically at the bottom of the Scan tab. Fill in your name, title, company, phone, and email. Upload your profile photo and company logo. Your QR code generates instantly — anyone who scans it saves your contact directly to their phone. Tap any share button to send your card via text, email, WhatsApp, or Messenger.</div>
+    </div>
+
+    <div class="guide" id="guide-bee">
+      <div class="guide-title"><span class="guide-num">3</span>Using Worker Bee AI</div>
+      <div class="guide-body">Go to the <strong>Bee AI</strong> tab. Ask Bee to write a follow-up email or text for any contact — just type "Write a follow-up email for Sarah" or use the quick prompt buttons. Bee AI knows your profession and tailors every message to your industry. You can also click a contact in the Contacts tab and ask Bee to write specifically for them.</div>
+    </div>
+
+    <div class="guide" id="guide-crm">
+      <div class="guide-title"><span class="guide-num">4</span>Connecting Your CRM</div>
+      <div class="guide-body">Go to <strong>Settings → CRM Connections</strong>. Click <strong>Connect</strong> next to your CRM (Follow Up Boss, HubSpot, LionDesk, or Salesforce). You'll be taken to your CRM's login page to authorize HiveFlow. Once approved, every contact you scan automatically appears in your CRM within seconds — zero manual work. To disconnect, click the green <strong>Connected</strong> button and confirm.</div>
+    </div>
+
+    <div class="guide" id="guide-pwa">
+      <div class="guide-title"><span class="guide-num">5</span>Install HiveFlow on Your Phone or Desktop</div>
+      <div class="guide-body">
+        <strong>On iPhone (Safari):</strong> Open hiveflo.app in Safari → tap the Share button (box with arrow) → scroll down → tap <strong>"Add to Home Screen"</strong> → tap Add. HiveFlow will appear as an app icon on your home screen.<br><br>
+        <strong>On Android (Chrome):</strong> Open hiveflo.app in Chrome → tap the three-dot menu → tap <strong>"Add to Home Screen"</strong> or look for the install banner that appears automatically.<br><br>
+        <strong>On Desktop (Chrome/Edge):</strong> Open hiveflo.app → look for the install icon in the address bar (a computer with a down arrow) → click it → click Install. HiveFlow opens as a full app window with no browser bar.<br><br>
+        You can also go to <strong>Settings → Install HiveFlow</strong> and tap the install button there.
+      </div>
+    </div>
+
+    <div class="guide" id="guide-billing">
+      <div class="guide-title"><span class="guide-num">6</span>Managing Your Subscription</div>
+      <div class="guide-body">Go to <strong>Settings → Support → Billing Portal</strong> to update your credit card, view past invoices, upgrade or downgrade your plan, or cancel your subscription. All billing is handled securely by Stripe. If you cancel, your account remains active until the end of your current billing period.</div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section">
+    <div class="section-title">Frequently Asked Questions</div>
+
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">What is HiveFlow? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">HiveFlow is an AI-powered business card scanner and CRM hub built specifically for real estate professionals — realtors, mortgage LOs, title agents, attorneys, and insurance agents. Scan any card, extract contact info automatically, let AI write your follow-up, and sync to all your CRMs from one place.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">How accurate is the AI card scanning? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">HiveFlow uses Claude AI vision (claude-sonnet-4-6) to extract contact information. Accuracy is very high for standard business cards. For best results, take a clear, well-lit photo with the card flat and fully visible. You can always edit any extracted field before saving.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">How does CRM connection work? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">When you click Connect on a CRM, you'll be taken to that CRM's official login page (this is called OAuth — the same technology used when you "Sign in with Google"). You log in and approve HiveFlow's access. After that, every contact you scan is automatically pushed to your CRM in the background. Your CRM login credentials are never stored by HiveFlow — only a secure access token is saved.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">Can I connect multiple CRMs at the same time? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Yes! You can connect as many CRMs as you want. Every scan pushes to all connected CRMs simultaneously. HiveFlow acts as your central hub — your contacts always stay safe here even if you switch CRMs.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">What is the Digital Business Card? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Your Digital Business Card is a shareable card with your contact info and a QR code. When someone scans your QR code, your contact is instantly saved to their phone. It unlocks after your first scan. You can share it via text, email, WhatsApp, Messenger, or download the QR code to print on materials.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">What is Worker Bee AI? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Worker Bee (Bee AI) is your personal AI writing assistant powered by Anthropic's Claude. It knows your profession and writes personalized follow-up emails and texts for any contact. Just tell it who you want to reach out to and what you need — it handles the writing.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">How do I cancel my subscription? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Go to Settings → Support → Billing Portal. From there you can cancel anytime. Your account stays active until the end of your current billing period. No fees, no penalties.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">Is my data secure? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Yes. All data is encrypted in transit (TLS) and at rest. We use Supabase for secure database storage and Stripe for payment processing. We never sell your data to third parties. You can export or delete your data at any time from Settings → Danger Zone.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">What's the difference between Starter and Pro? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Starter ($7/mo) includes unlimited scans, AI extraction, Bee AI, email/text drafts, 500 contacts, and your Digital Business Card. Pro ($15/mo) adds unlimited contacts, shared team CRM (3 users), pipeline tracking, CSV export, and priority support. Extra team seats are $5/seat/month on Pro.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFAQ(this)">Can I use HiveFlow as a mobile app? <span class="faq-arrow">▼</span></div>
+      <div class="faq-a">Yes! HiveFlow is a Progressive Web App (PWA). On iPhone, open hiveflo.app in Safari → Share → Add to Home Screen. On Android, Chrome will show an install banner automatically. On desktop, look for the install icon in your browser's address bar. It looks and feels exactly like a native app.</div>
+    </div>
+
+  </div>
+
+  <!-- CONTACT BOX -->
+  <div class="contact-box">
+    <h3>Still need <em style="color:#c9933a;font-style:italic;">help?</em></h3>
+    <p>Our team typically responds within a few hours.</p>
+    <a href="mailto:support@hiveflo.app" class="btn">✉️ Email Support</a>
+  </div>
+
+</div>
+
+<footer>
+  <a href="index.html" class="logo"><span>Hive</span><span>flo</span></a>
+  <div class="footer-links">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="terms.html">Terms</a>
+    <a href="privacy.html">Privacy</a>
+    <a href="mailto:support@hiveflo.app">Contact</a>
+  </div>
+</footer>
+
+<script>
+function toggleFAQ(el){
+  var arrow = el.querySelector('.faq-arrow');
+  var answer = el.nextElementSibling;
+  answer.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function scrollTo(id){
+  var el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function searchHelp(q){
+  if(!q){
+    document.querySelectorAll('.faq-item,.guide').forEach(function(el){el.style.display='';});
+    return;
+  }
+  q = q.toLowerCase();
+  document.querySelectorAll('.faq-item').forEach(function(el){
+    el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+  document.querySelectorAll('.guide').forEach(function(el){
+    el.style.display = el.textContent.toLowerCase().includes(q) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>
