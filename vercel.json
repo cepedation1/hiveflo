@@ -1,0 +1,13 @@
+{
+  "functions": {
+    "api/chat.js": {
+      "runtime": "edge"
+    },
+    "api/extract.js": {
+      "runtime": "edge"
+    },
+    "api/create-checkout.js": {
+      "runtime": "edge"
+    }
+  }
+}
